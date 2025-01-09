@@ -13,12 +13,10 @@ namespace SudokuSolver.Tests
         /// </summary>
         public void TestEasy()
         {
-            string input = "530070000900060001000308000800090003004500200020006000000045000000080100070020005",
-                output = "534678912976251348182349765813496275426815793759763124367128459214587639158934276";
-            SudokuGrid tested = new SudokuGrid(input),
-                expected = new SudokuGrid(output);
-            tested.Solve();
-            AssertEqual(expected, tested, "Easy test");
+            SudokuGrid actual = new SudokuGrid(TestData.EasyInput),
+                expected = new SudokuGrid(TestData.HardInput);
+            actual.Solve();
+            AssertEqual(expected, actual, "Easy test");
         }
 
         /// <summary>
@@ -27,12 +25,10 @@ namespace SudokuSolver.Tests
         /// </summary>
         public void TestMedium()
         {
-            string input = "000400000800000000000002060100050000506000700000800005050100300000000002003004000",
-                output = "276493158813256497945872361124657983569138724387419652652783149738921546491265837";
-            SudokuGrid tested = new SudokuGrid(input),
-                expected = new SudokuGrid(output);
-            tested.Solve();
-            AssertEqual(expected, tested, "Medium test");
+            SudokuGrid actual = new SudokuGrid(TestData.MediumInput),
+                expected = new SudokuGrid(TestData.MediumOutput);
+            actual.Solve();
+            AssertEqual(expected, actual, "Medium test");
         }
 
         /// <summary>
@@ -41,12 +37,10 @@ namespace SudokuSolver.Tests
         /// </summary>
         public void TestHard()
         {
-            string input = "000000000000000100020005004600801007000030000000602004700200000008000000000000000",
-                output = "817493562934671825562358471643821597791245638258976143475182936126534789389617254";
-            SudokuGrid tested = new SudokuGrid(input),
-                expected = new SudokuGrid(output);
-            tested.Solve();
-            AssertEqual(expected, tested, "Hard test");
+            SudokuGrid actual = new SudokuGrid(TestData.HardInput),
+                expected = new SudokuGrid(TestData.HardOutput);
+            actual.Solve();
+            AssertEqual(expected, actual, "Hard test");
         }
 
         /// <summary>
@@ -55,12 +49,10 @@ namespace SudokuSolver.Tests
         /// </summary>
         public void TestVeryHard()
         {
-            string input = "000000000000000080000050000500000006000040000000000050000000800000800000000000000",
-                output = "123456789456789123789123456372894615598671234614357892937562841265418379841239567";
-            SudokuGrid tested = new SudokuGrid(input),
-                expected = new SudokuGrid(output);
-            tested.Solve();
-            AssertEqual(expected, tested, "Very hard test");
+            SudokuGrid actual = new SudokuGrid(TestData.VeryHardInput),
+                expected = new SudokuGrid(TestData.VeryHardOutput);
+            actual.Solve();
+            AssertEqual(expected, actual, "Very hard test");
         }
 
         /// <summary>
@@ -69,23 +61,25 @@ namespace SudokuSolver.Tests
         /// </summary>
         public void TestExpert()
         {
-            string input = "000000000000000000500000000000000600000010800000000000000000000000000000000000000",
-                output = "123487659476521398598639124319846275687315942245793861861254739752968413934172586";
-            SudokuGrid tested = new SudokuGrid(input),
-                expected = new SudokuGrid(output);
-            tested.Solve();
-            AssertEqual(expected, tested, "Expert test");
+            SudokuGrid actual = new SudokuGrid(TestData.ExpertInput),
+                expected = new SudokuGrid(TestData.ExpertOutput);
+            actual.Solve();
+            AssertEqual(expected, actual, "Expert test");
         }
 
         /// <summary>
-        /// This method shows the result of a test.
+        /// Compares the expected and actual Sudoku grids, logging the result of the test.
         /// </summary>
-        public void AssertEqual(SudokuGrid excpected, SudokuGrid actual, string testName)
+        public void AssertEqual(SudokuGrid expected, SudokuGrid actual, string testName)
         {
-            if (excpected.ToString() == actual.ToString())
+            Console.ForegroundColor = ConsoleColor.Red;
+            if (expected.ToString() == actual.ToString())
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"{testName} passed!");
+            }
             else
-                Console.WriteLine($"{testName} failed: excpected {excpected}\n" +
+                Console.WriteLine($"{testName} failed: expected {expected}\n" +
                     $", but got {actual}.");
         }
     }
