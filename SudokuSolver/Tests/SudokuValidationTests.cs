@@ -1,10 +1,11 @@
 ﻿using SudokuSolver.Core;
+using SudokuSolver.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-/*
+
 namespace SudokuSolver.Tests
 {
     internal class SudokuValidationTests
@@ -21,7 +22,7 @@ namespace SudokuSolver.Tests
                 tested.Solve();
                 Console.WriteLine("Unsolvable puzzle test failed: No exception was thrown.");
             }
-            catch (UnsolvablePuzzleException)
+            catch (UnsolvableSudokuGridException)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Unsolvable puzzle test passed: Correct exception thrown.");
@@ -43,7 +44,7 @@ namespace SudokuSolver.Tests
                 SudokuGrid tested = new SudokuGrid(TestData.InvalidInput1);
                 Console.WriteLine("Invalid grid input test failed: No exception was thrown.");
             }
-            catch (InvalidGridInputException)
+            catch (InvalidSudokuGridException)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Invalid grid input test passed: Correct exception thrown.");
@@ -65,7 +66,7 @@ namespace SudokuSolver.Tests
                 SudokuGrid tested = new SudokuGrid(TestData.InvalidInput2);
                 Console.WriteLine("Invalid grid input test failed: No exception was thrown.");
             }
-            catch (InvalidGridInputException)
+            catch (InvalidSudokuGridException)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Invalid grid input test passed: Correct exception thrown.");
@@ -77,4 +78,3 @@ namespace SudokuSolver.Tests
         }
     }
 }
-*/
