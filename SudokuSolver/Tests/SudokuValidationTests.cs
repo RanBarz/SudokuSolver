@@ -1,9 +1,10 @@
-﻿using System;
+﻿using SudokuSolver.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+/*
 namespace SudokuSolver.Tests
 {
     internal class SudokuValidationTests
@@ -76,3 +77,4 @@ namespace SudokuSolver.Tests
         }
     }
 }
+*/

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SudokuSolver.Core;
+using System;
 
 namespace SudokuSolver.Tests
 {
