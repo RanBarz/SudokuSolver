@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 
 
 namespace SudokuSolver.Core
@@ -8,7 +10,7 @@ namespace SudokuSolver.Core
     /// managing its value and candidates.</summary>
     internal class Cell
     {
-        private List<int> candidates;
+        private HashSet<int> candidatesSet;
         private int value;
         private int gridSize;
 
@@ -18,7 +20,7 @@ namespace SudokuSolver.Core
         {
             this.gridSize = gridSize;
             this.value = value;
-            this.candidates = new List<int>();
+            this.candidatesSet = new HashSet<int>();
             setCandidates();
         }
 
@@ -27,24 +29,43 @@ namespace SudokuSolver.Core
         private void setCandidates()
         {
             for (int i = 1; i <= gridSize; i++)
-                candidates.Add(i);
+                candidatesSet.Add(i);
         }
 
         public int GetValue() => value;
 
+        public void SetValue()
+        {
+            this.value = candidatesSet.ElementAt<int>(0);
+            candidatesSet.Clear();
+        }
+
         public void SetValue(int value)
         {
             this.value = value;
+            candidatesSet.Clear();
         }
 
         /// <summary>
         /// Removes a number from the list of possible candidates.
         /// </summary>
-        public void RemoveCandidate(int candidate)
+        public bool RemoveCandidate(int candidate)
         {
-            candidates.Remove(candidate);
+            return candidatesSet.Remove(candidate);
         }
 
-        public int[] GetCandidates() => candidates.ToArray();
+        public bool ShouldFill() => candidatesSet.Count == 1;
+
+        public int[] GetCandidates() => candidatesSet.ToArray<int>();
+
+        public bool HasCandidate(int candidate) 
+            => candidatesSet.Contains(candidate);
+
+        public override string ToString()
+        {
+            return value.ToString();
+        }
+
+        public bool IsSolved() => value != 0;
     }
 }

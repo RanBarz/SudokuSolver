@@ -31,7 +31,49 @@ namespace SudokuSolver.Core
         /// </summary>
         public void Solve()
         {
-            throw new NotImplementedException();
+            bool progressed = true;
+            while (!IsSolved() && progressed)
+            {
+                progressed = false;
+                progressed = progressed ? true : SolveSudokuGridStructureArray(rows);
+                SetOccupiedStructureArr(cols);
+                SetOccupiedStructureArr(subgrids);
+                progressed = progressed ? true : SolveSudokuGridStructureArray(cols);
+                SetOccupiedStructureArr(rows);
+                SetOccupiedStructureArr(subgrids);
+                progressed = progressed ? true : SolveSudokuGridStructureArray(subgrids);
+                SetOccupiedStructureArr(rows);
+                SetOccupiedStructureArr(cols);
+            }
+        }
+
+        public static bool SolveSudokuGridStructureArray(SudokuGridStructure[] arr)
+        {
+            bool progressed = false;
+            foreach (var structure in arr)
+                progressed = progressed ? true : structure.Solve();
+            return progressed;
+        }
+
+        public static void SetOccupiedStructureArr(SudokuGridStructure[] arr)
+        {
+            foreach (var structure in arr)
+                structure.SetOccupied();
+        }
+
+        public bool IsSolved()
+        {
+            SetOccupiedCellsCount();
+            return occupiedCellsCount == gridSize * gridSize;
+        }
+
+        public void SetOccupiedCellsCount()
+        {
+            occupiedCellsCount = 0;
+            foreach (var row in rows)
+            {
+                occupiedCellsCount += row.GetOccupiedCount();
+            }
         }
 
         /// <summary>
@@ -40,7 +82,7 @@ namespace SudokuSolver.Core
         public void SetCells(string grid, Cell[] cells)
         {
             for (int i = 0; i < grid.Length; i++)
-                cells[i] = new Cell(grid[i], gridSize);
+                cells[i] = new Cell(grid[i] - '0', gridSize);
         }
 
         /// <summary>
@@ -94,6 +136,14 @@ namespace SudokuSolver.Core
                         new Subgrid((Cell[])cellsOfSub.Clone());
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            string grid = "";
+            foreach (var row in rows)
+                grid += row.ToString();
+            return grid;
         }
     }
 }

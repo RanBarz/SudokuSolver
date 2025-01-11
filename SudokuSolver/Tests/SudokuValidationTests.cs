@@ -13,7 +13,7 @@ namespace SudokuSolver.Tests
         /// <summary>
         /// Provides system tests for validating Sudoku puzzle inputs and handling edge cases.
         /// </summary>
-        public void TestUnsolvablePuzzle()
+        public static void TestUnsolvablePuzzle()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             try
@@ -36,7 +36,7 @@ namespace SudokuSolver.Tests
         /// <summary>
         /// Validates that an exception is thrown for the invalid grid input case.
         /// </summary>
-        public void TestInvalidGridInputWithNonNumericCharacters()
+        public static void TestInvalidGridInputWithNonNumericCharacters()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             try
@@ -58,7 +58,7 @@ namespace SudokuSolver.Tests
         /// <summary>
         /// Validates that an exception is thrown for grid that doesn't follow Sudoku rules.
         /// </summary>
-        public void TestInvalidGridInputWithIncorrectLength()
+        public static void TestInvalidGridInputWithIncorrectLength()
         {
             Console.ForegroundColor = ConsoleColor.Red;
             try
