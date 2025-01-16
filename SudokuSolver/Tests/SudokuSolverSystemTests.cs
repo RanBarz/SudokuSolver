@@ -1,4 +1,5 @@
 ﻿using SudokuSolver.Core;
+using SudokuSolver.UI;
 using System;
 
 namespace SudokuSolver.Tests
@@ -73,14 +74,13 @@ namespace SudokuSolver.Tests
         /// </summary>
         public static void AssertEqual(SudokuGrid expected, SudokuGrid actual, string testName)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            if (expected.ToString() == actual.ToString())
+            if (expected.ToString().Equals(actual.ToString()))
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"{testName} passed!");
+                ConsoleUI.PrintGreen($"{testName} passed!");
             }
             else
-                Console.WriteLine($"{testName} failed: expected {expected}\n" +
+                ConsoleUI.PrintRed($"{testName} failed: expected {expected}\n" +
                     $", but got {actual}.");
         }
     }

@@ -1,5 +1,6 @@
 ﻿using SudokuSolver.Core;
 using SudokuSolver.Core.Exceptions;
+using SudokuSolver.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,16 +21,16 @@ namespace SudokuSolver.Tests
             {
                 SudokuGrid tested = new SudokuGrid(TestData.UnsolvableInput);
                 tested.Solve();
-                Console.WriteLine("Unsolvable puzzle test failed: No exception was thrown.");
+                ConsoleUI.PrintRed("Unsolvable puzzle test failed: No exception was thrown.");
             }
             catch (UnsolvableSudokuGridException)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Unsolvable puzzle test passed: Correct exception thrown.");
+                ConsoleUI.PrintGreen("Unsolvable puzzle test passed: Correct exception thrown.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Unsolvable puzzle test failed: Unexpected exception type: {ex.GetType().Name}");
+                ConsoleUI.PrintRed($"Unsolvable puzzle test failed: Unexpected exception type: {ex.GetType().Name}");
             }
         }
 
@@ -38,20 +39,19 @@ namespace SudokuSolver.Tests
         /// </summary>
         public static void TestInvalidGridInputWithNonNumericCharacters()
         {
-            Console.ForegroundColor = ConsoleColor.Red;
             try
             {
                 SudokuGrid tested = new SudokuGrid(TestData.InvalidInput1);
-                Console.WriteLine("Invalid grid input test failed: No exception was thrown.");
+                ConsoleUI.PrintRed("Invalid grid input test failed: No exception was thrown.");
             }
             catch (InvalidSudokuGridException)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Invalid grid input test passed: Correct exception thrown.");
+                ConsoleUI.PrintGreen("Invalid grid input test passed: Correct exception thrown.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Invalid grid input test failed: Unexpected exception type: {ex.GetType().Name}");
+                ConsoleUI.PrintRed($"Invalid grid input test failed: Unexpected exception type: {ex.GetType().Name}");
             }
         }
 
@@ -60,20 +60,18 @@ namespace SudokuSolver.Tests
         /// </summary>
         public static void TestInvalidGridInputWithIncorrectLength()
         {
-            Console.ForegroundColor = ConsoleColor.Red;
             try
             {
                 SudokuGrid tested = new SudokuGrid(TestData.InvalidInput2);
-                Console.WriteLine("Invalid grid input test failed: No exception was thrown.");
+                ConsoleUI.PrintRed("Invalid grid input test failed: No exception was thrown.");
             }
             catch (InvalidSudokuGridException)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Invalid grid input test passed: Correct exception thrown.");
+                ConsoleUI.PrintGreen("Invalid grid input test passed: Correct exception thrown.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Invalid grid input test failed: Unexpected exception type: {ex.GetType().Name}");
+                ConsoleUI.PrintRed($"Invalid grid input test failed: Unexpected exception type: {ex.GetType().Name}");
             }
         }
     }
