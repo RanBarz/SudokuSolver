@@ -26,47 +26,17 @@ namespace SudokuSolver.Core
         }
 
         /// <summary>
-        /// Solves the Sudoku puzzle using constraint propagation, 
-        /// and backtracking.
+        /// Checks if the Sudoku grid is completely solved
         /// </summary>
-        public void Solve()
-        {
-            bool progressed = true;
-            while (!IsSolved() && progressed)
-            {
-                progressed = false;
-                progressed = progressed ? true : SolveSudokuGridStructureArray(rows);
-                SetOccupiedStructureArr(cols);
-                SetOccupiedStructureArr(subgrids);
-                progressed = progressed ? true : SolveSudokuGridStructureArray(cols);
-                SetOccupiedStructureArr(rows);
-                SetOccupiedStructureArr(subgrids);
-                progressed = progressed ? true : SolveSudokuGridStructureArray(subgrids);
-                SetOccupiedStructureArr(rows);
-                SetOccupiedStructureArr(cols);
-            }
-        }
-
-        public static bool SolveSudokuGridStructureArray(SudokuGridStructure[] arr)
-        {
-            bool progressed = false;
-            foreach (var structure in arr)
-                progressed = progressed ? true : structure.Solve();
-            return progressed;
-        }
-
-        public static void SetOccupiedStructureArr(SudokuGridStructure[] arr)
-        {
-            foreach (var structure in arr)
-                structure.SetOccupied();
-        }
-
         public bool IsSolved()
         {
             SetOccupiedCellsCount();
             return occupiedCellsCount == gridSize * gridSize;
         }
 
+        /// <summary>
+        /// Updates the count of cells that have been assigned values
+        /// </summary>
         public void SetOccupiedCellsCount()
         {
             occupiedCellsCount = 0;
@@ -85,6 +55,12 @@ namespace SudokuSolver.Core
                 cells[i] = new Cell(grid[i] - '0', gridSize);
         }
 
+        public SudokuGridStructure[] GetRows() => rows;
+
+        public SudokuGridStructure[] GetCols() => cols;
+
+        public SudokuGridStructure[] GetSubgrids() => subgrids;
+
         /// <summary>
         /// Organizes cells into rows for processing.
         /// </summary>
@@ -96,7 +72,7 @@ namespace SudokuSolver.Core
             {
                 for (int j  = 0; j < gridSize; j++)
                     cellsOfRow[j] = cells[j + i * gridSize];
-                rows[i] = new Row((Cell[])cellsOfRow.Clone());
+                rows[i] = new Row((Cell[])cellsOfRow.Clone(), gridSize);
             }
         }
 
@@ -111,7 +87,7 @@ namespace SudokuSolver.Core
             {
                 for (int j = 0; j < gridSize; j++)
                     cellsOfCol[j] = cells[i + j * gridSize];
-                cols[i] = new Column((Cell[])cellsOfCol.Clone());
+                cols[i] = new Column((Cell[])cellsOfCol.Clone(), gridSize);
             }
         }
 
@@ -121,23 +97,70 @@ namespace SudokuSolver.Core
         public void SetSubgrids(Cell[] cells)
         {
             int subgridSize = (int)Math.Sqrt(gridSize);
-            Cell[] cellsOfSub = new Cell[gridSize];
             subgrids = new Subgrid[gridSize];
-            for (int i = 0; i < subgridSize; i++)
+
+            for (int subgridRow = 0; subgridRow < subgridSize; subgridRow++)
             {
-                for (int j = 0; j < subgridSize; j++)
+                for (int subgridCol = 0; subgridCol < subgridSize; subgridCol++)
                 {
-                    for (int k = 0; k < subgridSize; k++)
-                        for (int l = 0; l < subgridSize; l++)
-                            cellsOfSub[l + k * subgridSize] =
-                                cells[i * subgridSize * gridSize +
-                                j * subgridSize + k * gridSize + l];
-                    subgrids[j + i * subgridSize] =
-                        new Subgrid((Cell[])cellsOfSub.Clone());
+                    Cell[] cellsInCurrentSubgrid = ExtractCellsForSubgrid(cells, subgridRow, subgridCol, subgridSize);
+                    int subgridIndex = CalculateSubgridIndex(subgridRow, subgridCol, subgridSize);
+                    subgrids[subgridIndex] = new Subgrid((Cell[])cellsInCurrentSubgrid.Clone(), gridSize);
                 }
             }
         }
 
+        /// <summary>
+        /// Extracts cells that belong to a specific subgrid
+        /// </summary>
+        private Cell[] ExtractCellsForSubgrid(Cell[] cells, int subgridRow, int subgridCol, int subgridSize)
+        {
+            Cell[] cellsInSubgrid = new Cell[gridSize];
+
+            for (int innerRow = 0; innerRow < subgridSize; innerRow++)
+            {
+                for (int innerCol = 0; innerCol < subgridSize; innerCol++)
+                {
+                    int cellIndexInSubgrid = CalculateCellIndexInSubgrid(innerRow, innerCol, subgridSize);
+                    int cellIndexInGrid = CalculateCellIndexInGrid(subgridRow, subgridCol, innerRow, innerCol, subgridSize);
+
+                    cellsInSubgrid[cellIndexInSubgrid] = cells[cellIndexInGrid];
+                }
+            }
+
+            return cellsInSubgrid;
+        }
+
+        /// <summary>
+        /// Calculates the index of a cell within its subgrid
+        /// </summary>
+        private int CalculateCellIndexInSubgrid(int innerRow, int innerCol, int subgridSize)
+        {
+            return innerCol + (innerRow * subgridSize);
+        }
+
+        /// <summary>
+        /// Calculates the index of a cell in the main grid based on its position in a subgrid
+        /// </summary>
+        private int CalculateCellIndexInGrid(int subgridRow, int subgridCol, int innerRow, int innerCol, int subgridSize)
+        {
+            return (subgridRow * subgridSize * gridSize) + // Move to correct row of subgrids
+                   (subgridCol * subgridSize) +            // Move to correct column of subgrids
+                   (innerRow * gridSize) +                 // Move to correct row within subgrid
+                   innerCol;                               // Move to correct column within subgrid
+        }
+
+        /// <summary>
+        /// Calculates the index of a subgrid in the array of subgrids
+        /// </summary>
+        private int CalculateSubgridIndex(int subgridRow, int subgridCol, int subgridSize)
+        {
+            return subgridCol + (subgridRow * subgridSize);
+        }
+
+        /// <summary>
+        /// Converts the grid to its string representation
+        /// </summary>
         public override string ToString()
         {
             string grid = "";

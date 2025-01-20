@@ -19,7 +19,7 @@ namespace SudokuSolver.Tests
             Console.ForegroundColor = ConsoleColor.Red;
             try
             {
-                SudokuGrid tested = new SudokuGrid(TestData.UnsolvableInput);
+                SudokuGridSolver tested = new SudokuGridSolver(TestData.UnsolvableInput);
                 tested.Solve();
                 ConsoleUI.PrintRed("Unsolvable puzzle test failed: No exception was thrown.");
             }

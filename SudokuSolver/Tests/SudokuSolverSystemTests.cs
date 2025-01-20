@@ -15,10 +15,9 @@ namespace SudokuSolver.Tests
         /// </summary>
         public static void TestEasy()
         {
-            SudokuGrid actual = new SudokuGrid(TestData.EasyInput),
-                expected = new SudokuGrid(TestData.EasyOutput);
-            actual.Solve();
-            AssertEqual(expected, actual, "Easy test");
+            string expected = TestData.EasyOutput;
+            SudokuGridSolver actual = new SudokuGridSolver(TestData.EasyInput);
+            AssertEqual(expected, actual.Solve(), "Easy test");
         }
 
         /// <summary>
@@ -27,10 +26,9 @@ namespace SudokuSolver.Tests
         /// </summary>
         public static void TestMedium()
         {
-            SudokuGrid actual = new SudokuGrid(TestData.MediumInput),
-                expected = new SudokuGrid(TestData.MediumOutput);
-            actual.Solve();
-            AssertEqual(expected, actual, "Medium test");
+            string expected = TestData.MediumOutput;
+            SudokuGridSolver actual = new SudokuGridSolver(TestData.MediumInput);
+            AssertEqual(expected, actual.Solve(), "Medium test");
         }
 
         /// <summary>
@@ -39,10 +37,9 @@ namespace SudokuSolver.Tests
         /// </summary>
         public static void TestHard()
         {
-            SudokuGrid actual = new SudokuGrid(TestData.HardInput),
-                expected = new SudokuGrid(TestData.HardOutput);
-            actual.Solve();
-            AssertEqual(expected, actual, "Hard test");
+            string expected = TestData.HardOutput;
+            SudokuGridSolver actual = new SudokuGridSolver(TestData.HardInput);
+            AssertEqual(expected, actual.Solve(), "Hard test");
         }
 
         /// <summary>
@@ -51,10 +48,9 @@ namespace SudokuSolver.Tests
         /// </summary>
         public static void TestVeryHard()
         {
-            SudokuGrid actual = new SudokuGrid(TestData.VeryHardInput),
-                expected = new SudokuGrid(TestData.VeryHardOutput);
-            actual.Solve();
-            AssertEqual(expected, actual, "Very hard test");
+            string expected = TestData.VeryHardOutput;
+            SudokuGridSolver actual = new SudokuGridSolver(TestData.VeryHardInput);
+            AssertEqual(expected, actual.Solve(), "Very Hard test");
         }
 
         /// <summary>
@@ -63,18 +59,17 @@ namespace SudokuSolver.Tests
         /// </summary>
         public static void TestExpert()
         {
-            SudokuGrid actual = new SudokuGrid(TestData.ExpertInput),
-                expected = new SudokuGrid(TestData.ExpertOutput);
-            actual.Solve();
-            AssertEqual(expected, actual, "Expert test");
+            string expected = TestData.ExpertOutput;
+            SudokuGridSolver actual = new SudokuGridSolver(TestData.ExpertInput);
+            AssertEqual(expected, actual.Solve(), "Expert test");
         }
 
         /// <summary>
         /// Compares the expected and actual Sudoku grids, logging the result of the test.
         /// </summary>
-        public static void AssertEqual(SudokuGrid expected, SudokuGrid actual, string testName)
+        public static void AssertEqual(string expected, string actual, string testName)
         {
-            if (expected.ToString().Equals(actual.ToString()))
+            if (expected.Equals(actual))
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 ConsoleUI.PrintGreen($"{testName} passed!");

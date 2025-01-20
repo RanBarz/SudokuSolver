@@ -7,6 +7,6 @@ namespace SudokuSolver.Core
     /// </summary>
     internal class Column : SudokuGridStructure
     {
-        public Column(Cell[] cells) : base(cells) { }
+        public Column(Cell[] cells, int gridSize) : base(cells, gridSize) { }
     }
 }
