@@ -102,11 +102,11 @@ namespace SudokuSolver.Core
         public bool RemoveCandidates()
         {
             HashSet<Cell> removedFrom = new HashSet<Cell>();
+            SetOccupied();
             foreach (Cell cell in cells)
                 foreach (int occupied in occupiedSet)
                     if (cell.RemoveCandidate(occupied) && !cell.IsSolved())
                         removedFrom.Add(cell);
-            SetOccupied();
             return removedFrom.Count > 0;
         }
 

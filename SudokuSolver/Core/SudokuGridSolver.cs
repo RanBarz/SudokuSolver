@@ -24,6 +24,11 @@ namespace SudokuSolver.Core
             this.grid = new SudokuGrid(grid);
         }
 
+        public SudokuGridSolver(SudokuGrid grid)
+        {
+            this.grid = grid;
+        }
+
         /// <summary>
         /// Attempts to solve the Sudoku puzzle using row, column, and subgrid solving strategies
         /// </summary>
@@ -38,10 +43,10 @@ namespace SudokuSolver.Core
                 if (SudokuGridValidator.IsUnsolvable(grid))
                     throw new UnsolvableSudokuGridException();
                 progressed = false;
-                progressed = progressed ? true : SolveSudokuGridStructureArray(rows);
-                progressed = progressed ? true : SolveSudokuGridStructureArray(cols);
-                progressed = progressed ? true : SolveSudokuGridStructureArray(subgrids);
-                if (!progressed)
+                progressed = SolveSudokuGridStructureArray(rows) || progressed;
+                progressed = SolveSudokuGridStructureArray(cols) || progressed;
+                progressed = SolveSudokuGridStructureArray(subgrids) || progressed;
+                if (!progressed && !grid.IsSolved())
                     Backtrack();
             }
             if (!grid.IsSolved())
@@ -59,8 +64,8 @@ namespace SudokuSolver.Core
             bool progressed = false;
             foreach (var structure in arr)
             {
-                progressed = progressed ? true : structure.RemoveCandidates();
-                progressed = progressed ? true : structure.SingleCandidate();
+                progressed = structure.RemoveCandidates() || progressed;
+                progressed = structure.SingleCandidate() || progressed;
             }
             return progressed;
         }
@@ -74,8 +79,8 @@ namespace SudokuSolver.Core
             foreach (var candidate in candidates)
             {
                 cell.SetValue(candidate);
-                tryGrid = new SudokuGridSolver(grid.ToString());
                 structure.SetOccupied();
+                tryGrid = new SudokuGridSolver(grid.Copy());
                 try
                 {
                     grid = new SudokuGrid(tryGrid.Solve());

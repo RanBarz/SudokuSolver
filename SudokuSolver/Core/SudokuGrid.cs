@@ -158,6 +158,26 @@ namespace SudokuSolver.Core
             return subgridCol + (subgridRow * subgridSize);
         }
 
+        public SudokuGrid Copy()
+        {
+            SudokuGrid copy = new SudokuGrid(this.ToString());
+            copy.SetAllOccupied();
+            return copy;
+        }
+
+        public void SetAllOccupied()
+        {
+            SetSudokuStructuresArrayOccupied(rows);
+            SetSudokuStructuresArrayOccupied(cols);
+            SetSudokuStructuresArrayOccupied(subgrids);
+        }
+
+        private static void SetSudokuStructuresArrayOccupied(SudokuGridStructure[] arr)
+        {
+            foreach (var structure in arr)
+                structure.SetOccupied();
+        }
+
         /// <summary>
         /// Converts the grid to its string representation
         /// </summary>
