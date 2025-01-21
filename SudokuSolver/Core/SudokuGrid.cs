@@ -168,5 +168,38 @@ namespace SudokuSolver.Core
                 grid += row.ToString();
             return grid;
         }
-    }
+
+        public SudokuGridStructure GetMostOccupiedGridStructure()
+        {
+            SudokuGridStructure maxRow, maxCol, maxSub = null;
+            maxRow = GetMostOccupiedInStructureArray(rows);
+            maxCol = GetMostOccupiedInStructureArray(cols);
+            maxSub = GetMostOccupiedInStructureArray(subgrids);
+
+            maxRow = maxRow.GetOccupiedCount() > maxCol.GetOccupiedCount() ?
+                maxRow : maxCol;
+            maxRow = maxRow.GetOccupiedCount() > maxSub.GetOccupiedCount() ?
+                maxRow : maxSub;
+            return maxRow;
+        }
+
+        public SudokuGridStructure GetMostOccupiedInStructureArray(SudokuGridStructure[] arr)
+        {
+            int maxOccupied = -1;
+            SudokuGridStructure maxStructure = null;
+
+            foreach (var structure in arr)
+            {
+                structure.RemoveCandidates();
+                if (structure.GetOccupiedCount() > maxOccupied &&
+                    structure.GetOccupiedCount() != gridSize)
+                {
+                    maxOccupied = structure.GetOccupiedCount();
+                    maxStructure = structure;
+                }
+            }
+
+            return maxStructure;
+        }
+}
 }

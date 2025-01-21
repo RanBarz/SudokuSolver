@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SudokuSolver.Core.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,11 +35,17 @@ namespace SudokuSolver.Core
             bool progressed = true;
             while (!grid.IsSolved() && progressed)
             {
+                if (SudokuGridValidator.IsUnsolvable(grid))
+                    throw new UnsolvableSudokuGridException();
                 progressed = false;
                 progressed = progressed ? true : SolveSudokuGridStructureArray(rows);
                 progressed = progressed ? true : SolveSudokuGridStructureArray(cols);
                 progressed = progressed ? true : SolveSudokuGridStructureArray(subgrids);
+                if (!progressed)
+                    Backtrack();
             }
+            if (!grid.IsSolved())
+                throw new UnsolvableSudokuGridException();
             return grid.ToString();
         }
 
@@ -56,6 +63,31 @@ namespace SudokuSolver.Core
                 progressed = progressed ? true : structure.SingleCandidate();
             }
             return progressed;
+        }
+
+        public void Backtrack()
+        {
+            SudokuGridStructure structure = grid.GetMostOccupiedGridStructure();
+            Cell cell = structure.GetCellWithLeastCandidates();
+            HashSet<int> candidates = new HashSet<int>(cell.GetCandidates());
+            SudokuGridSolver tryGrid;
+            foreach (var candidate in candidates)
+            {
+                cell.SetValue(candidate);
+                tryGrid = new SudokuGridSolver(grid.ToString());
+                structure.SetOccupied();
+                try
+                {
+                    grid = new SudokuGrid(tryGrid.Solve());
+                    break;
+                }
+                catch (UnsolvableSudokuGridException)
+                {
+                    cell.SetValue(0);
+                    structure.RemoveFromOccupied(candidate);
+                    cell.SetCandidates(candidates);
+                }
+            }
         }
     }
 }

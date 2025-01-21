@@ -8,6 +8,7 @@ namespace SudokuSolver.Core
     internal abstract class SudokuGridStructure : IComparable<SudokuGridStructure>
     {
         private Cell[] cells;
+        private int gridSize;
         private HashSet<int> occupiedSet;
         private Dictionary<int, HashSet<Cell>> candidatesMap;
 
@@ -20,6 +21,7 @@ namespace SudokuSolver.Core
         {
             this.cells = cells;
             this.occupiedSet = new HashSet<int>();
+            this.gridSize = gridSize;
             this.candidatesMap = new Dictionary<int, HashSet<Cell>>(gridSize);
             SetOccupied();
         }
@@ -40,6 +42,11 @@ namespace SudokuSolver.Core
                 if (cell.GetValue() != 0 &&
                     !occupiedSet.Contains(cell.GetValue()))
                     occupiedSet.Add(cell.GetValue());
+        }
+
+        public void RemoveFromOccupied(int value)
+        {
+            occupiedSet.Remove(value);
         }
 
         /// <summary>
@@ -126,6 +133,29 @@ namespace SudokuSolver.Core
                 foreach (var cell in toRemove)
                     pair.Value.Remove(cell);
             }
+        }
+
+        public Cell GetCellWithLeastCandidates()
+        {
+            int min = gridSize + 1;
+            Cell minCell = null;
+            foreach (var cell in cells)
+            { 
+                if (cell.GetCandidates().Length < min && cell.GetCandidates().Length != 0)
+                {
+                    minCell = cell;
+                    min = cell.GetCandidates().Length;
+                }
+            }
+            return minCell;
+        }
+
+        public bool HasUnsolvableCell()
+        {
+            foreach (var cell in cells)
+                if (cell.GetCandidates().Length == 0 && !cell.IsSolved())
+                    return true;
+            return false;
         }
 
         /// <summary>
