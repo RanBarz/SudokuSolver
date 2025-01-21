@@ -61,13 +61,14 @@ namespace SudokuSolver.Core
         /// <returns>True if any progress was made in solving</returns>
         public static bool SolveSudokuGridStructureArray(SudokuGridStructure[] arr)
         {
-            bool progressed = false;
+            bool progressed = false, alreadyFilled = false;
             foreach (var structure in arr)
             {
                 progressed = structure.RemoveCandidates() || progressed;
-                progressed = structure.SingleCandidate() || progressed;
+                if (alreadyFilled || structure.SingleCandidate())
+                    alreadyFilled = true;
             }
-            return progressed;
+            return progressed || alreadyFilled;
         }
 
         public void Backtrack()
