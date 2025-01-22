@@ -1,4 +1,5 @@
 ﻿using SudokuSolver.Core;
+using SudokuSolver.Core.Exceptions;
 using System;
 using System.Diagnostics;
 
@@ -11,42 +12,81 @@ namespace SudokuSolver.UI
         private const string SHOW_INPUT_MESSAGE = 
             "The grid you entered looks as follows: ";
 
-        public static void StartSudokuSolver()
+        public static void StartSudokuSolver(int gridSize)
         {
-            SudokuGridSolver solver;
+            SudokuGridSolver solver = null;
             Stopwatch stopwatch = new Stopwatch();
-            string input;
-
-            Console.WriteLine(MENU_MESSAGE);
-            input = Console.ReadLine(); 
+            string input = ""; 
 
             while (input != "exit")
             {
-                Console.WriteLine(SHOW_INPUT_MESSAGE);
-                PrintSudokuGrid(input);
-                solver = new SudokuGridSolver(input);
-                Console.WriteLine(RESULT_MESSAGE);
-                stopwatch.Reset();
-                stopwatch.Start();
-                PrintSudokuGrid(solver.Solve());
-                stopwatch.Stop();
-                Console.WriteLine($"It was solved in {stopwatch.ElapsedMilliseconds} ms.");
-                Console.WriteLine(MENU_MESSAGE);
-                input = Console.ReadLine();
+                try
+                {
+                    solver = GetInput(input, solver, gridSize);
+                    ShowOutput(solver, stopwatch);
+                }
+                catch (IllegalStringOfSudokuGridException ex)
+                {
+                    PrintRed(ex.Message);
+                }
             }
+        }
+
+        private static void ShowOutput(SudokuGridSolver solver, Stopwatch stopwatch)
+        {
+            PrintGreen(RESULT_MESSAGE);
+            stopwatch.Reset();
+            stopwatch.Start();
+            PrintSudokuGrid(solver.Solve());
+            stopwatch.Stop();
+            PrintGreen($"It was solved in {stopwatch.ElapsedMilliseconds} ms.");
+        }
+
+        private static SudokuGridSolver GetInput(string input, SudokuGridSolver solver, int gridSize)
+        {
+            PrintBlue(MENU_MESSAGE);
+            input = Console.ReadLine();
+            if (!SudokuGridValidator.LegalStringOfGrid(input, gridSize))
+                throw new IllegalStringOfSudokuGridException();
+            PrintBlue(SHOW_INPUT_MESSAGE);
+            PrintSudokuGrid(input);
+            solver = new SudokuGridSolver(input);
+            return solver;
         }
 
         public static void PrintSudokuGrid(string grid)
         {
-            int index = 0;
-            for (int i = 0; i < 9; i++)
+            Console.WriteLine("╔═══════╤═══════╤═══════╗");
+
+            for (int row = 0; row < 9; row++)
             {
-                for (int j = 0; j < 9; j++)
+                Console.Write("║ ");
+                for (int col = 0; col < 9; col++)
                 {
-                    Console.Write(grid[index++] + " ");
+                    // Print the current number
+                    char value = grid[row * 9 + col];
+                    Console.Write(value == '0' ? '·' : value);
+
+                    // Add spacing and vertical borders
+                    if (col < 8)
+                    {
+                        Console.Write(" ");
+                        if ((col + 1) % 3 == 0)
+                        {
+                            Console.Write("│ ");
+                        }
+                    }
                 }
-                Console.WriteLine("\n");
+                Console.WriteLine(" ║");
+
+                // Add horizontal borders between 3x3 sections
+                if (row < 8 && (row + 1) % 3 == 0)
+                {
+                    Console.WriteLine("╟───────┼───────┼───────╢");
+                }
             }
+
+            Console.WriteLine("╚═══════╧═══════╧═══════╝");
         }
         public static void PrintRed(string message)
         {
@@ -57,6 +97,12 @@ namespace SudokuSolver.UI
         public static void PrintGreen(string message)
         {
             Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(message);
+        }
+
+        public static void PrintBlue(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(message);
         }
     }
