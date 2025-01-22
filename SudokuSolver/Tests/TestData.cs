@@ -11,6 +11,8 @@ namespace SudokuSolver.Tests
     /// </summary>
     internal static class TestData
     {
+        public const int GridSize = 9;
+
         public const string
             //This sudoku grid can be solved by using only single candidate technique.
             EasyInput = "050703060007000800000816000000030000005000100730040086906000204840572093000409000",
@@ -30,7 +32,7 @@ namespace SudokuSolver.Tests
 
         public const string
             UnsolvableInput = "0933000001000804600000008004506003000327560006001094001000005800200002000760",
-            InvalidInput1 = "dfhbsdfge34544",
-            InvalidInput2 = "533070000900060001000308000800090003004500200020006000000045000000080100070020005";
+            InputWithNonNumericCharacters = "dfhbsdfge34544",
+            InputWithIncorrectLength = "533070000900060001000308000800090003004500200020006000000045000000080100070020005";
     }
 }

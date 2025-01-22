@@ -21,7 +21,8 @@ namespace SudokuSolver.Core
         /// <param name="grid">String representation of the Sudoku grid</param>
         public SudokuGridSolver(string grid)
         {
-            this.grid = new SudokuGrid(grid);
+            int gridSize = GetGridSize(grid);
+            this.grid = new SudokuGrid(grid, gridSize);
             //if (SudokuGridValidator.IsInvalid(this.grid))
                 //throw new InvalidSudokuGridException();
         }
@@ -29,6 +30,11 @@ namespace SudokuSolver.Core
         private SudokuGridSolver(SudokuGrid grid)
         {
             this.grid = grid;
+        }
+
+        private static int GetGridSize(string grid)
+        {
+            return (int) Math.Sqrt(grid.Length);
         }
 
         /// <summary>
@@ -93,7 +99,8 @@ namespace SudokuSolver.Core
                 tryGrid = new SudokuGridSolver(grid.Copy());
                 try
                 {
-                    grid = new SudokuGrid(tryGrid.Solve());
+                    grid = new SudokuGrid(tryGrid.Solve(), 
+                        GetGridSize(grid.ToString()));
                     break;
                 }
                 catch (UnsolvableSudokuGridException)

@@ -36,5 +36,33 @@ namespace SudokuSolver.Core
                     return true;
             return false;
         }
+
+        public static bool LegalStringOfGrid(string grid, int gridSize)
+        {
+            if (!HasProperSize(grid, gridSize))
+                return false;
+            if (!HasProperChars(grid, gridSize))
+                return false;
+            return true;
+        }
+
+        public static bool HasProperSize(string grid, int gridSize)
+        {
+            return grid.Length == gridSize * gridSize;
+        }
+
+        public static bool HasProperChars(string grid, int gridSize)
+        {
+            int value;
+
+            foreach (char c in grid)
+            {
+                value = c - '0';
+                if (value < 0 || value > gridSize)
+                    return false;
+            }
+
+            return true;
+        }
     }
 }

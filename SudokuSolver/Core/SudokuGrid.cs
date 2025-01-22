@@ -15,9 +15,9 @@ namespace SudokuSolver.Core
         /// <summary>
         /// Initializes a new Sudoku grid from a string representation.
         /// </summary>
-        public SudokuGrid(string grid)
+        public SudokuGrid(string grid, int gridSize)
         {
-            this.gridSize = GridSize;
+            this.gridSize = gridSize;
             Cell[] cells = new Cell[gridSize * gridSize];
             SetCells(grid, cells);
             SetRows(cells);
@@ -162,7 +162,7 @@ namespace SudokuSolver.Core
 
         public SudokuGrid Copy()
         {
-            SudokuGrid copy = new SudokuGrid(this.ToString());
+            SudokuGrid copy = new SudokuGrid(ToString(), gridSize);
             copy.SetAllOccupied();
             return copy;
         }

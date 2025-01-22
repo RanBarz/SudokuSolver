@@ -41,31 +41,35 @@ namespace SudokuSolver.Tests
         {
             try
             {
-                SudokuGrid tested = new SudokuGrid(TestData.InvalidInput1);
-                ConsoleUI.PrintRed("Invalid grid input test failed: No exception was thrown.");
+                SudokuGrid tested = new SudokuGrid(TestData.InputWithNonNumericCharacters,
+                    TestData.GridSize);
+                ConsoleUI.PrintRed("Invalid grid input test failed:" +
+                    " No exception was thrown.");
             }
-            catch (InvalidSudokuGridException)
+            catch (IllegalStringOfSudokuGridException)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUI.PrintGreen("Invalid grid input test passed: Correct exception thrown.");
+                ConsoleUI.PrintGreen("Invalid grid input test passed: " +
+                    "Correct exception thrown.");
             }
             catch (Exception ex)
             {
-                ConsoleUI.PrintRed($"Invalid grid input test failed: Unexpected exception type: {ex.GetType().Name}");
+                ConsoleUI.PrintRed($"Invalid grid input test failed: " +
+                    $"Unexpected exception type: {ex.GetType().Name}");
             }
         }
 
         /// <summary>
         /// Validates that an exception is thrown for grid that doesn't follow Sudoku rules.
         /// </summary>
-        public static void TestInvalidGridInputWithIncorrectLength()
+        public static void TestGridInputWithIncorrectLength()
         {
             try
             {
-                SudokuGrid tested = new SudokuGrid(TestData.InvalidInput2);
+                SudokuGrid tested = new SudokuGrid(TestData.InputWithIncorrectLength, TestData.GridSize);
                 ConsoleUI.PrintRed("Invalid grid input test failed: No exception was thrown.");
             }
-            catch (InvalidSudokuGridException)
+            catch (IllegalStringOfSudokuGridException)
             {
                 ConsoleUI.PrintGreen("Invalid grid input test passed: Correct exception thrown.");
             }
