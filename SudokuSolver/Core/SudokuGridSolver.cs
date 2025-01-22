@@ -22,9 +22,11 @@ namespace SudokuSolver.Core
         public SudokuGridSolver(string grid)
         {
             this.grid = new SudokuGrid(grid);
+            //if (SudokuGridValidator.IsInvalid(this.grid))
+                //throw new InvalidSudokuGridException();
         }
 
-        public SudokuGridSolver(SudokuGrid grid)
+        private SudokuGridSolver(SudokuGrid grid)
         {
             this.grid = grid;
         }
@@ -43,9 +45,12 @@ namespace SudokuSolver.Core
                 if (SudokuGridValidator.IsUnsolvable(grid))
                     throw new UnsolvableSudokuGridException();
                 progressed = false;
-                progressed = SolveSudokuGridStructureArray(rows) || progressed;
-                progressed = SolveSudokuGridStructureArray(cols) || progressed;
-                progressed = SolveSudokuGridStructureArray(subgrids) || progressed;
+                progressed = RemoveCandidatesSudokuGridStructureArray(rows);
+                progressed = RemoveCandidatesSudokuGridStructureArray(cols) || progressed;
+                progressed = RemoveCandidatesSudokuGridStructureArray(subgrids) || progressed;
+                progressed = SingleCandidateSudokuGridStructureArray(rows) || progressed;
+                progressed = SingleCandidateSudokuGridStructureArray(cols) || progressed;
+                progressed = SingleCandidateSudokuGridStructureArray(subgrids) || progressed; 
                 if (!progressed && !grid.IsSolved())
                     Backtrack();
             }
@@ -59,16 +64,20 @@ namespace SudokuSolver.Core
         /// </summary>
         /// <param name="arr">Array of grid structures to solve</param>
         /// <returns>True if any progress was made in solving</returns>
-        public static bool SolveSudokuGridStructureArray(SudokuGridStructure[] arr)
+        public static bool RemoveCandidatesSudokuGridStructureArray(SudokuGridStructure[] arr)
         {
-            bool progressed = false, alreadyFilled = false;
+            bool progressed = false;
             foreach (var structure in arr)
-            {
                 progressed = structure.RemoveCandidates() || progressed;
-                if (alreadyFilled || structure.SingleCandidate())
-                    alreadyFilled = true;
-            }
-            return progressed || alreadyFilled;
+            return progressed;
+        }
+
+        public static bool SingleCandidateSudokuGridStructureArray(SudokuGridStructure[] arr)
+        {
+            foreach (var structure in arr)
+                if (structure.SingleCandidate())
+                    return true;
+            return false;
         }
 
         public void Backtrack()

@@ -55,6 +55,8 @@ namespace SudokuSolver.Core
                 cells[i] = new Cell(grid[i] - '0', gridSize);
         }
 
+        public int GetGridSize() => gridSize;
+
         public SudokuGridStructure[] GetRows() => rows;
 
         public SudokuGridStructure[] GetCols() => cols;

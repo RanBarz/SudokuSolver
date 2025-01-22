@@ -61,6 +61,7 @@ namespace SudokuSolver.Core
         public bool SingleCandidate()
         {
             bool madeProgress = false;
+            RemoveCandidates();
             SetOccupied();
 
             foreach (var cell in cells)
@@ -156,6 +157,25 @@ namespace SudokuSolver.Core
                 if (cell.GetCandidates().Length == 0 && !cell.IsSolved())
                     return true;
             return false;
+        }
+
+        public bool HasDuplicates()
+        {
+            bool [] flagArr = new bool[gridSize + 1];
+
+            for (int i = 0; i < gridSize; i++)
+                if (cells[i].GetValue() != 0 &&
+                    flagArr[cells[i].GetValue()])
+                    return true;
+                else
+                    flagArr[cells[i].GetValue()] = true;
+            return false;
+        }
+
+        private static void IntializeBooleanArray(bool[] flagArr)
+        {
+            for (int j = 0; j < flagArr.Length; j++)
+                flagArr[j] = false;
         }
 
         /// <summary>
