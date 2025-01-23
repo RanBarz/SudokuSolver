@@ -46,6 +46,7 @@ namespace SudokuSolver.Core
             SudokuGridStructure[] cols = grid.GetCols();
             SudokuGridStructure[] subgrids = grid.GetSubgrids();
             bool progressed = true;
+
             while (!grid.IsSolved() && progressed)
             {
                 if (SudokuGridValidator.IsUnsolvable(grid))
@@ -108,6 +109,7 @@ namespace SudokuSolver.Core
                     cell.SetValue(0);
                     structure.RemoveFromOccupied(candidate);
                     cell.SetCandidates(candidates);
+                    cell.RemoveCandidate(candidate);
                 }
             }
         }
