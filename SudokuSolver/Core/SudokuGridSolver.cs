@@ -50,7 +50,7 @@ namespace SudokuSolver.Core
             while (!grid.IsSolved() && progressed)
             {
                 if (SudokuGridValidator.IsUnsolvable(grid))
-                    throw new UnsolvableSudokuGridException();
+                    throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
                 progressed = false;
                 progressed = RemoveCandidatesSudokuGridStructureArray(rows);
                 progressed = RemoveCandidatesSudokuGridStructureArray(cols) || progressed;
@@ -62,7 +62,7 @@ namespace SudokuSolver.Core
                     Backtrack();
             }
             if (!grid.IsSolved())
-                throw new UnsolvableSudokuGridException();
+                throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
             return grid.ToString();
         }
 

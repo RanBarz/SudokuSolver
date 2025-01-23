@@ -65,6 +65,13 @@ namespace SudokuSolver.Core
             }
         }
 
+        public static void ValidateInput(string input)
+        {
+            if (input == null)
+                throw new ArgumentException("The input must be a Sudoku grid, " +
+                    "following the instructions.");
+        }
+
         public static void ValidateParameters(string[] parameters, int maxParameters, int minParameters)
         {
             if (TooManyParams(parameters, maxParameters))

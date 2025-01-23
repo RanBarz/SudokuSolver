@@ -2,6 +2,7 @@
 using SudokuSolver.Core.Exceptions;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace SudokuSolver.UI
 {
@@ -14,20 +15,22 @@ namespace SudokuSolver.UI
             "-\tEach character should be a digit between 0 and 9.\n" +
             "-\tZero represents an empty cell.\n" +
             "-\tEvery nine cells represent a row (from the top down).\n"
-        , MENU_MESSAGE = "Enter a Sudoku grid (or 'exit', " +
+        , MENU_MESSAGE = "\nEnter a Sudoku grid (or 'exit', " +
             "you can add ' -s' for string representation):"
-        , RESULT_MESSAGE = "The solution to this grid is: "
+        , RESULT_MESSAGE = "\nThe solution to this grid is: "
         , SHOW_INPUT_MESSAGE = "The grid you entered looks as follows: ";
 
         public static void StartSudokuSolver(int gridSize)
         {
+            DisableProgramTermination();
+
             SudokuGridSolver solver = null;
             Stopwatch stopwatch = new Stopwatch();
             string input = "";
             bool graphicMode = true, exceptionThrown = false;
             PrintBlue(START_MESSAGE);
 
-            while (solver != null || input.Equals("") || exceptionThrown)
+            while (solver != null || input != null && input.Equals("") || exceptionThrown)
             {
                 exceptionThrown = false;
                 try
@@ -36,17 +39,22 @@ namespace SudokuSolver.UI
                     if (solver != null)
                         ShowOutput(solver, stopwatch, graphicMode, gridSize);
                 }
-                catch (IllegalStringOfSudokuGridException ex)
-                {
-                    exceptionThrown = true;
-                    PrintRed(ex.Message);
-                }
-                catch (ArgumentException ex)
+                catch (Exception ex) when (ex is IllegalStringOfSudokuGridException ||
+                            ex is UnsolvableSudokuGridException ||
+                            ex is ArgumentException)
                 {
                     exceptionThrown = true;
                     PrintRed(ex.Message);
                 }
             }
+        }
+
+        private static void DisableProgramTermination()
+        {
+            Console.CancelKeyPress += (sender, e) =>
+            {
+                e.Cancel = true;
+            };
         }
 
         private static void ShowOutput(SudokuGridSolver solver, Stopwatch stopwatch, bool graphicMode, 
@@ -71,6 +79,7 @@ namespace SudokuSolver.UI
             string[] parameters;
             PrintBlue(MENU_MESSAGE);
             input = Console.ReadLine();
+            SudokuGridValidator.ValidateInput(input);
             parameters = input.Split(new char[] {' ', '\n', '\t'}, StringSplitOptions.RemoveEmptyEntries);
             SudokuGridValidator.ValidateParameters(parameters, MAX_PARAMETERS, MIN_PARAMETERS);
             input = parameters[0];
@@ -164,19 +173,19 @@ namespace SudokuSolver.UI
 
         public static void PrintRed(string message)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine(message);
         }
 
         public static void PrintGreen(string message)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine(message);
         }
 
         public static void PrintBlue(string message)
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(message);
         }
     }
