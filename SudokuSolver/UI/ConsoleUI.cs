@@ -7,71 +7,111 @@ namespace SudokuSolver.UI
 {
     internal class ConsoleUI
     {
-        private const string MENU_MESSAGE = "Enter a Sudoku grid (or 'exit'):";
-        private const string RESULT_MESSAGE = "The solution to this grid is: ";
-        private const string SHOW_INPUT_MESSAGE = 
-            "The grid you entered looks as follows: ";
+        private const int MAX_PARAMETERS = 2, MIN_PARAMETERS = 1;
+        private const string START_MESSAGE = "Welcome to the Omega Sudoku Solver.\n" +
+            "Instructions:\n" +
+            "-\tEnter a string that is 81 characters long.\n" +
+            "-\tEach character should be a digit between 0 and 9.\n" +
+            "-\tZero represents an empty cell.\n" +
+            "-\tEvery nine cells represent a row (from the top down).\n"
+        , MENU_MESSAGE = "Enter a Sudoku grid (or 'exit', " +
+            "you can add ' -s' for string representation):"
+        , RESULT_MESSAGE = "The solution to this grid is: "
+        , SHOW_INPUT_MESSAGE = "The grid you entered looks as follows: ";
 
         public static void StartSudokuSolver(int gridSize)
         {
             SudokuGridSolver solver = null;
             Stopwatch stopwatch = new Stopwatch();
-            string input = ""; 
+            string input = "";
+            bool graphicMode = true, exceptionThrown = false;
+            PrintBlue(START_MESSAGE);
 
-            while (input != "exit")
+            while (solver != null || input.Equals("") || exceptionThrown)
             {
+                exceptionThrown = false;
                 try
                 {
-                    solver = GetInput(input, solver, gridSize);
-                    ShowOutput(solver, stopwatch);
+                    solver = GetInput(ref input, solver, gridSize, ref graphicMode);
+                    if (solver != null)
+                        ShowOutput(solver, stopwatch, graphicMode, gridSize);
                 }
                 catch (IllegalStringOfSudokuGridException ex)
                 {
+                    exceptionThrown = true;
+                    PrintRed(ex.Message);
+                }
+                catch (ArgumentException ex)
+                {
+                    exceptionThrown = true;
                     PrintRed(ex.Message);
                 }
             }
         }
 
-        private static void ShowOutput(SudokuGridSolver solver, Stopwatch stopwatch)
+        private static void ShowOutput(SudokuGridSolver solver, Stopwatch stopwatch, bool graphicMode, 
+            int gridSize)
         {
+            string solution;
             PrintGreen(RESULT_MESSAGE);
             stopwatch.Reset();
             stopwatch.Start();
-            PrintSudokuGrid(solver.Solve());
+            solution = solver.Solve();
             stopwatch.Stop();
+            if (graphicMode)
+                PrintSudokuGrid(solution, gridSize);
+            else
+                PrintGreen(solution);
             PrintGreen($"It was solved in {stopwatch.ElapsedMilliseconds} ms.");
         }
 
-        private static SudokuGridSolver GetInput(string input, SudokuGridSolver solver, int gridSize)
+        private static SudokuGridSolver GetInput(ref string input, SudokuGridSolver solver, 
+            int gridSize, ref bool graphicMode)
         {
+            string[] parameters;
             PrintBlue(MENU_MESSAGE);
             input = Console.ReadLine();
-            if (!SudokuGridValidator.LegalStringOfGrid(input, gridSize))
-                throw new IllegalStringOfSudokuGridException();
+            parameters = input.Split(new char[] {' ', '\n', '\t'}, StringSplitOptions.RemoveEmptyEntries);
+            SudokuGridValidator.ValidateParameters(parameters, MAX_PARAMETERS, MIN_PARAMETERS);
+            input = parameters[0];
+            if (parameters.Length > 1)
+            {
+                if (parameters[1] == "-s")
+                    graphicMode = false;
+                else
+                    throw new ArgumentException("The only acceptable second param is -s.");
+            }
+            else
+                graphicMode = true;
+            Console.Clear();
+            if (input.Equals("exit"))
+                return null;
+            SudokuGridValidator.ValidateLegalStringOfGrid(input, gridSize);
             PrintBlue(SHOW_INPUT_MESSAGE);
-            PrintSudokuGrid(input);
+            if (graphicMode)
+                PrintSudokuGrid(input, gridSize);
+            else
+                PrintBlue(input);
             solver = new SudokuGridSolver(input);
             return solver;
         }
 
-        public static void PrintSudokuGrid(string grid)
+        public static void PrintSudokuGrid(string grid, int gridSize)
         {
-            Console.WriteLine("╔═══════╤═══════╤═══════╗");
+            PrintSudokuGridBorder(gridSize, true);
 
-            for (int row = 0; row < 9; row++)
+            for (int row = 0; row < gridSize; row++)
             {
                 Console.Write("║ ");
-                for (int col = 0; col < 9; col++)
+                for (int col = 0; col < gridSize; col++)
                 {
-                    // Print the current number
-                    char value = grid[row * 9 + col];
+                    char value = grid[row * gridSize + col];
                     Console.Write(value == '0' ? '·' : value);
 
-                    // Add spacing and vertical borders
-                    if (col < 8)
+                    if (col < gridSize - 1)
                     {
                         Console.Write(" ");
-                        if ((col + 1) % 3 == 0)
+                        if ((col + 1) % Math.Sqrt(gridSize) == 0)
                         {
                             Console.Write("│ ");
                         }
@@ -79,15 +119,49 @@ namespace SudokuSolver.UI
                 }
                 Console.WriteLine(" ║");
 
-                // Add horizontal borders between 3x3 sections
-                if (row < 8 && (row + 1) % 3 == 0)
+                if (row < gridSize - 1 && (row + 1) % Math.Sqrt(gridSize) == 0)
                 {
-                    Console.WriteLine("╟───────┼───────┼───────╢");
+                    PrintSudokuSubgridBorder(gridSize);
                 }
             }
-
-            Console.WriteLine("╚═══════╧═══════╧═══════╝");
+            PrintSudokuGridBorder(gridSize, false);
         }
+
+        public static void PrintSudokuGridBorder(int gridSize, bool isUpperBorder)
+        {
+            int subgridSize = (int) Math.Sqrt(gridSize);
+            if (isUpperBorder)
+                Console.Write("╔");
+            else
+                Console.Write("╚");
+            for (int i = 0; i < (subgridSize * 2 + 1) * subgridSize + subgridSize - 1; i++)
+                if (i % subgridSize * 2 + 2 == 0)
+                    if (isUpperBorder)
+                        Console.Write("╤");
+                    else
+                        Console.Write("╧");
+                else
+                    Console.Write("═");
+            if (isUpperBorder)
+                Console.WriteLine("╗");
+            else
+                Console.WriteLine("╝");
+        }
+
+        public static void PrintSudokuSubgridBorder(int gridSize)
+        {
+            int subgridSize = (int)Math.Sqrt(gridSize);
+
+            Console.Write("╟");
+            for (int i = 0; i < (subgridSize * 2 + 1) * subgridSize + subgridSize - 1; i++)
+                if (i % subgridSize * 2 + 2 == 0)
+                    Console.Write("┼");
+                else
+                    Console.Write("─");
+            Console.WriteLine("╢");
+        }
+
+
         public static void PrintRed(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;

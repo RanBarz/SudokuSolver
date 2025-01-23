@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SudokuSolver.Core.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -37,21 +38,21 @@ namespace SudokuSolver.Core
             return false;
         }
 
-        public static bool LegalStringOfGrid(string grid, int gridSize)
+        public static void ValidateLegalStringOfGrid(string grid, int gridSize)
         {
-            if (!HasProperSize(grid, gridSize))
-                return false;
-            if (!HasProperChars(grid, gridSize))
-                return false;
-            return true;
+            ValidateHasProperSize(grid, gridSize);
+            ValidateHasProperChars(grid, gridSize);
         }
 
-        public static bool HasProperSize(string grid, int gridSize)
+        public static void ValidateHasProperSize(string grid, int gridSize)
         {
-            return grid.Length == gridSize * gridSize;
+            if (grid.Length != gridSize * gridSize)
+                throw new IllegalStringOfSudokuGridException(
+                    $"The string reprsentation of the grid has {grid.Length} characters, " +
+                    $"instead of {gridSize * gridSize}.");
         }
 
-        public static bool HasProperChars(string grid, int gridSize)
+        public static void ValidateHasProperChars(string grid, int gridSize)
         {
             int value;
 
@@ -59,10 +60,21 @@ namespace SudokuSolver.Core
             {
                 value = c - '0';
                 if (value < 0 || value > gridSize)
-                    return false;
+                    throw new IllegalStringOfSudokuGridException(
+                        $"The character {c} isn't legal in a Sudoku grid.");
             }
-
-            return true;
         }
+
+        public static void ValidateParameters(string[] parameters, int maxParameters, int minParameters)
+        {
+            if (TooManyParams(parameters, maxParameters))
+                throw new ArgumentException("Too many arguments provided. Only up to 2 are allowed.");
+            if (!EnoughParams(parameters, minParameters))
+                throw new ArgumentException("Not enough arguments provided. At least one is required.");
+        }
+
+        public static bool TooManyParams(string[] parameters, int maxParameters) => parameters.Length > maxParameters;
+    
+        public static bool EnoughParams(string[] parameters, int minParameters) => parameters.Length >= minParameters;
     }
 }
