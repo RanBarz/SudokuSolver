@@ -49,8 +49,10 @@ namespace SudokuSolver.Core
 
             while (!grid.IsSolved() && progressed)
             {
-                if (SudokuGridValidator.IsUnsolvable(grid))
+                if (SudokuGridValidator.IsUnsolvable(grid) || SudokuGridValidator.IsInvalid(grid))
                     throw new UnsolvableSudokuGridException();
+                if (subgrids[2].GetOccupiedCount() == 7)
+                    Console.Write("");
                 progressed = false;
                 progressed = RemoveCandidatesSudokuGridStructureArray(rows);
                 progressed = RemoveCandidatesSudokuGridStructureArray(cols) || progressed;
