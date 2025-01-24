@@ -10,7 +10,7 @@ namespace SudokuSolver.Core
         private Cell[] cells;
         private int gridSize;
         private HashSet<int> occupiedSet;
-        private Dictionary<int, HashSet<Cell>> candidatesMap;
+        private Dictionary<int, List<Cell>> candidatesMap;
 
         /// <summary>
         /// Initializes a grid structure with an array of cells and specified grid size
@@ -22,7 +22,7 @@ namespace SudokuSolver.Core
             this.cells = cells;
             this.occupiedSet = new HashSet<int>();
             this.gridSize = gridSize;
-            this.candidatesMap = new Dictionary<int, HashSet<Cell>>(gridSize);
+            this.candidatesMap = new Dictionary<int, List<Cell>>();
             SetOccupied();
         }
 
@@ -77,27 +77,6 @@ namespace SudokuSolver.Core
         }
 
         /// <summary>
-        /// Identifies and fills cells that are the only possible location for a number in this structure
-        /// </summary>
-        /// <returns>True if any cell was filled</returns>
-        public bool HiddenSingle()
-        {
-            bool progressed = false;
-
-            SetCandidatesMap();
-            foreach (KeyValuePair<int, HashSet<Cell>> pair in candidatesMap)
-                if (pair.Value.Count == 1)
-                {
-                    pair.Value.ElementAt(0).SetValue(pair.Key);
-                    SetOccupied();
-                    progressed = true;
-                }
-
-            if (!progressed) return false;
-            return true;
-        }
-
-        /// <summary>
         /// Removes invalid candidates based on current cell values.
         /// </summary>
         public bool RemoveCandidates()
@@ -110,32 +89,7 @@ namespace SudokuSolver.Core
                         removedFrom.Add(cell);
             return removedFrom.Count > 0;
         }
-
-        /// <summary>
-        /// Updates the mapping of candidate numbers to cells that could contain them
-        /// </summary>
-        public void SetCandidatesMap()
-        {
-            foreach (var cell in cells)
-                foreach (int candidate in cell.GetCandidates())
-                {
-                    if (!candidatesMap.TryGetValue(candidate, out HashSet<Cell> cellsOfCandidate))
-                        candidatesMap.Add(candidate, new HashSet<Cell>());
-                    candidatesMap.TryGetValue(candidate, out cellsOfCandidate);
-                    cellsOfCandidate.Add(cell);
-                }
-            List<Cell> toRemove = new List<Cell>();
-            foreach (KeyValuePair<int, HashSet<Cell>> pair in candidatesMap)
-            {
-                toRemove.Clear();
-                foreach (var cell in pair.Value)
-                    if (!cell.GetCandidates().Contains(pair.Key))
-                        toRemove.Add(cell);
-                foreach (var cell in toRemove)
-                    pair.Value.Remove(cell);
-            }
-        }
-
+        
         public Cell GetCellWithLeastCandidates()
         {
             int min = gridSize + 1;
@@ -172,10 +126,38 @@ namespace SudokuSolver.Core
             return false;
         }
 
-        private static void IntializeBooleanArray(bool[] flagArr)
+        public bool HiddenSingle()
         {
-            for (int j = 0; j < flagArr.Length; j++)
-                flagArr[j] = false;
+            bool progressed = false;
+            SetCandidatesMap();
+
+            foreach (var kvp in candidatesMap)
+            {
+                if (kvp.Value.Count == 1 && !kvp.Value[0].IsSolved())
+                {
+                    var cell = kvp.Value[0];
+                    cell.SetCandidates(new HashSet<int>() { kvp.Key });
+                    progressed = true;
+                }
+            }
+
+            return progressed;
+        }
+
+        private void SetCandidatesMap()
+        {
+            candidatesMap.Clear();
+
+            foreach (var cell in cells)
+            {
+                    foreach (int candidate in cell.GetCandidates())
+                    {
+                        if (!candidatesMap.ContainsKey(candidate))
+                            candidatesMap[candidate] = new List<Cell>();
+
+                        candidatesMap[candidate].Add(cell);
+                    }
+            }
         }
 
         /// <summary>

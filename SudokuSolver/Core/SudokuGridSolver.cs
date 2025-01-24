@@ -57,7 +57,7 @@ namespace SudokuSolver.Core
                 progressed = RemoveCandidatesSudokuGridStructureArray(subgrids) || progressed;
                 progressed = SingleCandidateSudokuGridStructureArray(rows) || progressed;
                 progressed = SingleCandidateSudokuGridStructureArray(cols) || progressed;
-                progressed = SingleCandidateSudokuGridStructureArray(subgrids) || progressed; 
+                progressed = SingleCandidateSudokuGridStructureArray(subgrids) || progressed;
                 if (!progressed && !grid.IsSolved())
                     Backtrack();
             }
@@ -75,8 +75,11 @@ namespace SudokuSolver.Core
         {
             bool progressed = false;
             foreach (var structure in arr)
+            {
                 progressed = structure.RemoveCandidates() || progressed;
-            return progressed;
+                progressed = structure.HiddenSingle() || progressed;
+            }
+                return progressed;
         }
 
         public static bool SingleCandidateSudokuGridStructureArray(SudokuGridStructure[] arr)
