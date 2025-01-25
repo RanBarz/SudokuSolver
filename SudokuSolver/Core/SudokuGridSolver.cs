@@ -23,8 +23,6 @@ namespace SudokuSolver.Core
         {
             int gridSize = GetGridSize(grid);
             this.grid = new SudokuGrid(grid, gridSize);
-            //if (SudokuGridValidator.IsInvalid(this.grid))
-                //throw new InvalidSudokuGridException();
         }
 
         private SudokuGridSolver(SudokuGrid grid)
@@ -49,8 +47,6 @@ namespace SudokuSolver.Core
 
             while (!grid.IsSolved() && progressed)
             {
-                if (SudokuGridValidator.IsUnsolvable(grid) || SudokuGridValidator.IsInvalid(grid))
-                    throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
                 progressed = false;
                 progressed = RemoveCandidatesSudokuGridStructureArray(rows);
                 progressed = RemoveCandidatesSudokuGridStructureArray(cols) || progressed;
@@ -58,6 +54,8 @@ namespace SudokuSolver.Core
                 progressed = SingleCandidateSudokuGridStructureArray(rows) || progressed;
                 progressed = SingleCandidateSudokuGridStructureArray(cols) || progressed;
                 progressed = SingleCandidateSudokuGridStructureArray(subgrids) || progressed;
+                if (SudokuGridValidator.IsUnsolvable(grid) || SudokuGridValidator.IsInvalid(grid))
+                    throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
                 if (!progressed && !grid.IsSolved())
                     Backtrack();
             }
