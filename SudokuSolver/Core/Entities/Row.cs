@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace SudokuSolver.Core
 {
     /// <summary>

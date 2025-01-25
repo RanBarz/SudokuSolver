@@ -8,19 +8,29 @@ using System.Threading.Tasks;
 
 namespace SudokuSolver.Core
 {
+    /// <summary>
+    /// The class offering validation to both string representation of sudoku grids,
+    /// and objects of them.
+    /// </summary>
     internal class SudokuGridValidator
     {
+        /// <summary>
+        /// Returns true if an unsolved cell has no candidates.
+        /// </summary>
         public static bool IsUnsolvable(SudokuGrid grid)
         {
-            foreach (var row in grid.GetRows())
+            foreach (SudokuGridStructure row in grid.GetRows())
                 if (row.HasUnsolvableCell())
                     return true;
             return false;
         }
 
+        /// <summary>
+        /// Returns true if the grid has duplicates in one of its structures.
+        /// </summary>
         public static bool IsInvalid(SudokuGrid grid)
         {
-            bool hasDuplicates = false;
+            bool hasDuplicates;
 
             hasDuplicates = GridStructureArrayHasDuplicates(grid.GetRows());
             hasDuplicates = hasDuplicates || 
@@ -30,20 +40,32 @@ namespace SudokuSolver.Core
             return hasDuplicates;
         }
 
+        /// <summary>
+        /// A method which receives an array of grid structures. and returns true if one of them has a
+        /// duplicate value.
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <returns></returns>
         public static bool GridStructureArrayHasDuplicates(SudokuGridStructure[] arr)
         {
-            foreach (var structure in arr)
+            foreach (SudokuGridStructure structure in arr)
                 if (structure.HasDuplicates())
                     return true;
             return false;
         }
 
+        /// <summary>
+        /// A method which throws an exception if a string representation of a grid isn't legal.
+        /// </summary>
         public static void ValidateLegalStringOfGrid(string grid, int gridSize)
         {
             ValidateHasProperSize(grid, gridSize);
             ValidateHasProperChars(grid, gridSize);
         }
 
+        /// <summary>
+        /// A method which throws an exception if a string representation of a grid isn't of legal size.
+        /// </summary>
         public static void ValidateHasProperSize(string grid, int gridSize)
         {
             if (grid.Length != gridSize * gridSize)
@@ -52,6 +74,9 @@ namespace SudokuSolver.Core
                     $"instead of {gridSize * gridSize}.");
         }
 
+        /// <summary>
+        /// A method which throws an exception if a string representation has illegal chars.
+        /// </summary>
         public static void ValidateHasProperChars(string grid, int gridSize)
         {
             int value;
@@ -65,6 +90,9 @@ namespace SudokuSolver.Core
             }
         }
 
+        /// <summary>
+        /// A method which throws an exception if the input is null
+        /// </summary>
         public static void ValidateInput(string input)
         {
             if (input == null)
@@ -72,6 +100,10 @@ namespace SudokuSolver.Core
                     "following the instructions.");
         }
 
+        /// <summary>
+        /// A method which throws an exception if the number of parameters is below the min, 
+        /// or above the max.
+        /// </summary>
         public static void ValidateParameters(string[] parameters, int maxParameters, int minParameters)
         {
             if (TooManyParams(parameters, maxParameters))
@@ -80,8 +112,10 @@ namespace SudokuSolver.Core
                 throw new ArgumentException("Not enough arguments provided. At least one is required.");
         }
 
-        public static bool TooManyParams(string[] parameters, int maxParameters) => parameters.Length > maxParameters;
+        public static bool TooManyParams(string[] parameters, int maxParameters) 
+            => parameters.Length > maxParameters;
     
-        public static bool EnoughParams(string[] parameters, int minParameters) => parameters.Length >= minParameters;
+        public static bool EnoughParams(string[] parameters, int minParameters) 
+            => parameters.Length >= minParameters;
     }
 }

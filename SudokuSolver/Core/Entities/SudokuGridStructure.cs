@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SudokuSolver.Core
 {
     /// <summary>Base class for row, column, and subgrid structures in the Sudoku grid.</summary>
-    internal abstract class SudokuGridStructure : IComparable<SudokuGridStructure>
+    internal abstract class SudokuGridStructure
     {
         private Cell[] cells;
-        private int gridSize;
+        private readonly int gridSize;
         private HashSet<int> occupiedSet;
         private Dictionary<int, List<Cell>> candidatesMap;
 
@@ -20,9 +19,9 @@ namespace SudokuSolver.Core
         public SudokuGridStructure(Cell[] cells, int gridSize)
         {
             this.cells = cells;
-            this.occupiedSet = new HashSet<int>();
+            occupiedSet = new HashSet<int>();
             this.gridSize = gridSize;
-            this.candidatesMap = new Dictionary<int, List<Cell>>();
+            candidatesMap = new Dictionary<int, List<Cell>>();
             SetOccupied();
         }
 
@@ -44,6 +43,9 @@ namespace SudokuSolver.Core
                     occupiedSet.Add(cell.GetValue());
         }
 
+        /// <summary>
+        /// A method which removes a specific value from the occupied set of an object
+        /// </summary>
         public void RemoveFromOccupied(int value)
         {
             occupiedSet.Remove(value);
@@ -64,7 +66,7 @@ namespace SudokuSolver.Core
             RemoveCandidates();
             SetOccupied();
 
-            foreach (var cell in cells)
+            foreach (Cell cell in cells)
                 if (cell.ShouldFill())
                 {
                     cell.SetValue();
@@ -72,8 +74,7 @@ namespace SudokuSolver.Core
                     RemoveCandidates();
                     madeProgress = true;
                 }
-            if (!madeProgress) return false;
-            return true;
+            return madeProgress;
         }
 
         /// <summary>
@@ -90,11 +91,14 @@ namespace SudokuSolver.Core
             return removedFrom.Count > 0;
         }
         
+        /// <summary>
+        /// A method which returns the cell with the least candidates in a structure
+        /// </summary>
         public Cell GetCellWithLeastCandidates()
         {
             int min = gridSize + 1;
             Cell minCell = null;
-            foreach (var cell in cells)
+            foreach (Cell cell in cells)
             { 
                 if (cell.GetCandidates().Length < min && cell.GetCandidates().Length != 0)
                 {
@@ -105,14 +109,20 @@ namespace SudokuSolver.Core
             return minCell;
         }
 
+        /// <summary>
+        /// A method which returns true if the structure has cell, that isn't solved and has no candidates.
+        /// </summary>
         public bool HasUnsolvableCell()
         {
-            foreach (var cell in cells)
+            foreach (Cell cell in cells)
                 if (cell.GetCandidates().Length == 0 && !cell.IsSolved())
                     return true;
             return false;
         }
 
+        /// <summary>
+        /// A method which returns true if astructure has duplicate values in it.
+        /// </summary>
         public bool HasDuplicates()
         {
             bool [] flagArr = new bool[gridSize + 1];
@@ -126,16 +136,19 @@ namespace SudokuSolver.Core
             return false;
         }
 
+        /// <summary>
+        /// A method which removes candidates from a cell, according to the Hidden Single technique
+        /// </summary>
         public bool HiddenSingle()
         {
             bool progressed = false;
             SetCandidatesMap();
 
-            foreach (var kvp in candidatesMap)
+            foreach (KeyValuePair<int, List<Cell>> kvp in candidatesMap)
             {
                 if (kvp.Value.Count == 1 && !kvp.Value[0].IsSolved())
                 {
-                    var cell = kvp.Value[0];
+                    Cell cell = kvp.Value[0];
                     cell.SetCandidates(new HashSet<int>() { kvp.Key });
                     progressed = true;
                 }
@@ -144,11 +157,14 @@ namespace SudokuSolver.Core
             return progressed;
         }
 
+        /// <summary>
+        /// A method which sets the candidatesMap of a structure
+        /// </summary>
         private void SetCandidatesMap()
         {
             candidatesMap.Clear();
 
-            foreach (var cell in cells)
+            foreach (Cell cell in cells)
             {
                     foreach (int candidate in cell.GetCandidates())
                     {
@@ -161,22 +177,12 @@ namespace SudokuSolver.Core
         }
 
         /// <summary>
-        /// Compares structures based on number of occupied cells.
-        /// </summary>
-        public int CompareTo(SudokuGridStructure other)
-        {
-            if (other == null)
-                throw new ArgumentNullException("other");
-            return this.occupiedSet.Count - other.occupiedSet.Count;
-        }
-
-        /// <summary>
         /// Returns a string representation of all cells in this structure
         /// </summary>
         public override string ToString()
         {
             string structure = "";
-            foreach (var cell in cells)
+            foreach (Cell cell in cells)
                 structure += cell.ToString();
             return structure;
         }

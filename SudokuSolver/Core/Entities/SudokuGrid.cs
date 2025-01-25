@@ -7,10 +7,9 @@ namespace SudokuSolver.Core
     /// </summary>
     internal class SudokuGrid
     {
-        private int gridSize;
+        private readonly int gridSize;
         private int occupiedCellsCount;
         private SudokuGridStructure[] rows, cols, subgrids;
-        private const int GridSize = 9;
 
         /// <summary>
         /// Initializes a new Sudoku grid from a string representation.
@@ -40,7 +39,7 @@ namespace SudokuSolver.Core
         public void SetOccupiedCellsCount()
         {
             occupiedCellsCount = 0;
-            foreach (var row in rows)
+            foreach (SudokuGridStructure row in rows)
             {
                 occupiedCellsCount += row.GetOccupiedCount();
             }
@@ -54,9 +53,7 @@ namespace SudokuSolver.Core
             for (int i = 0; i < grid.Length; i++)
                 cells[i] = new Cell(grid[i] - '0', gridSize);
         }
-
-        public int GetGridSize() => gridSize;
-
+        
         public SudokuGridStructure[] GetRows() => rows;
 
         public SudokuGridStructure[] GetCols() => cols;
@@ -160,6 +157,9 @@ namespace SudokuSolver.Core
             return subgridCol + (subgridRow * subgridSize);
         }
 
+        /// <summary>
+        /// A method which returns a SudokuGrid object, which is the copy of the current object.
+        /// </summary>
         public SudokuGrid Copy()
         {
             SudokuGrid copy = new SudokuGrid(ToString(), gridSize);
@@ -167,6 +167,9 @@ namespace SudokuSolver.Core
             return copy;
         }
 
+        /// <summary>
+        /// A method which sets all of a SudokuGrid's structures' occupied sets
+        /// </summary>
         public void SetAllOccupied()
         {
             SetSudokuStructuresArrayOccupied(rows);
@@ -174,9 +177,12 @@ namespace SudokuSolver.Core
             SetSudokuStructuresArrayOccupied(subgrids);
         }
 
+        /// <summary>
+        /// A method which sets the occupied set each structure in an array of SudokuGridStructures
+        /// </summary>
         private static void SetSudokuStructuresArrayOccupied(SudokuGridStructure[] arr)
         {
-            foreach (var structure in arr)
+            foreach (SudokuGridStructure structure in arr)
                 structure.SetOccupied();
         }
 
@@ -186,14 +192,17 @@ namespace SudokuSolver.Core
         public override string ToString()
         {
             string grid = "";
-            foreach (var row in rows)
+            foreach (SudokuGridStructure row in rows)
                 grid += row.ToString();
             return grid;
         }
 
+        /// <summary>
+        /// A method which returns the most occupied grid structure in a grid, which isn't fully solved.
+        /// </summary>
         public SudokuGridStructure GetMostOccupiedGridStructure()
         {
-            SudokuGridStructure maxRow, maxCol, maxSub = null;
+            SudokuGridStructure maxRow, maxCol, maxSub;
             maxRow = GetMostOccupiedInStructureArray(rows);
             maxCol = GetMostOccupiedInStructureArray(cols);
             maxSub = GetMostOccupiedInStructureArray(subgrids);
@@ -205,12 +214,16 @@ namespace SudokuSolver.Core
             return maxRow;
         }
 
+        /// <summary>
+        ///  A method which receives an array of grid structures, and returns the most occupied of them.
+        ///  *Which isn't fully solved.
+        /// </summary>
         public SudokuGridStructure GetMostOccupiedInStructureArray(SudokuGridStructure[] arr)
         {
             int maxOccupied = -1;
             SudokuGridStructure maxStructure = null;
 
-            foreach (var structure in arr)
+            foreach (SudokuGridStructure structure in arr)
             {
                 structure.RemoveCandidates();
                 if (structure.GetOccupiedCount() > maxOccupied &&

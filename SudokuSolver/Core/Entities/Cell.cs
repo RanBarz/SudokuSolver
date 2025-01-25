@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 
 
 namespace SudokuSolver.Core
@@ -12,7 +10,7 @@ namespace SudokuSolver.Core
     {
         private HashSet<int> candidatesSet;
         private int value;
-        private int gridSize;
+        private readonly int gridSize;
 
         /// <summary>Initializes a new cell with a value
         /// and possible candidates.</summary>
@@ -20,7 +18,7 @@ namespace SudokuSolver.Core
         {
             this.gridSize = gridSize;
             this.value = value;
-            this.candidatesSet = new HashSet<int>();
+            candidatesSet = new HashSet<int>();
             SetCandidates();
         }
 
@@ -38,7 +36,7 @@ namespace SudokuSolver.Core
         /// </summary>
         public void SetCandidates(HashSet<int> candidates)
         {
-            this.candidatesSet = new HashSet<int>(candidates);
+            candidatesSet = new HashSet<int>(candidates);
         }
 
         /// <summary>
@@ -51,7 +49,7 @@ namespace SudokuSolver.Core
         /// </summary>
         public void SetValue()
         {
-            this.value = candidatesSet.ElementAt<int>(0);
+            value = candidatesSet.ElementAt<int>(0);
             candidatesSet.Clear();
         }
 

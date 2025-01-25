@@ -1,9 +1,6 @@
 ﻿using SudokuSolver.Core.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SudokuSolver.Core
 {
@@ -43,11 +40,26 @@ namespace SudokuSolver.Core
             SudokuGridStructure[] rows = grid.GetRows();
             SudokuGridStructure[] cols = grid.GetCols();
             SudokuGridStructure[] subgrids = grid.GetSubgrids();
+            ApplySolvingMethods(rows, cols, subgrids);
+            if (grid.IsSolved())
+                return grid.ToString();
+            throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
+        }
+
+        /// <summary>
+        /// A method which applies both human solving heuristics and backtracking until the grid is solved,
+        /// or throws UnsolvableSudokuException
+        /// </summary>
+        /// <param name="rows"></param>
+        /// <param name="cols"></param>
+        /// <param name="subgrids"></param>
+        /// <exception cref="UnsolvableSudokuGridException"></exception>
+        private void ApplySolvingMethods(SudokuGridStructure[] rows, SudokuGridStructure[] cols, SudokuGridStructure[] subgrids)
+        {
             bool progressed = true;
 
             while (!grid.IsSolved() && progressed)
             {
-                progressed = false;
                 progressed = RemoveCandidatesSudokuGridStructureArray(rows);
                 progressed = RemoveCandidatesSudokuGridStructureArray(cols) || progressed;
                 progressed = RemoveCandidatesSudokuGridStructureArray(subgrids) || progressed;
@@ -59,20 +71,16 @@ namespace SudokuSolver.Core
                 if (!progressed && !grid.IsSolved())
                     Backtrack();
             }
-            if (!grid.IsSolved())
-                throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
-            return grid.ToString();
         }
 
         /// <summary>
         /// Applies solving strategies to an array of grid structures (rows, columns, or subgrids)
         /// </summary>
-        /// <param name="arr">Array of grid structures to solve</param>
         /// <returns>True if any progress was made in solving</returns>
         public static bool RemoveCandidatesSudokuGridStructureArray(SudokuGridStructure[] arr)
         {
             bool progressed = false;
-            foreach (var structure in arr)
+            foreach (SudokuGridStructure structure in arr)
             {
                 progressed = structure.RemoveCandidates() || progressed;
                 progressed = structure.HiddenSingle() || progressed;
@@ -80,28 +88,45 @@ namespace SudokuSolver.Core
                 return progressed;
         }
 
+        /// <summary>
+        /// A method which receives an array of sudoku grid structures and fills cells,
+        /// which only have one candidate
+        /// </summary>
+        /// <returns>True if any progress was made in solving</returns>
         public static bool SingleCandidateSudokuGridStructureArray(SudokuGridStructure[] arr)
         {
-            foreach (var structure in arr)
+            foreach (SudokuGridStructure structure in arr)
                 if (structure.SingleCandidate())
                     return true;
             return false;
         }
 
+        /// <summary>
+        /// A method which finds a good cell for guessing (least candidates), and starts backtracking. 
+        /// </summary>
         public void Backtrack()
         {
             SudokuGridStructure structure = grid.GetMostOccupiedGridStructure();
             Cell cell = structure.GetCellWithLeastCandidates();
             HashSet<int> candidates = new HashSet<int>(cell.GetCandidates());
+            RecursiveSolve(cell, candidates, structure);
+        }
+
+        /// <summary>
+        /// A method which trys solving the grid by "guessing" a specific cell's values.
+        /// </summary>
+        public void RecursiveSolve(Cell cell, HashSet<int> candidates, SudokuGridStructure structure)
+        {
             SudokuGridSolver tryGrid;
-            foreach (var candidate in candidates)
+
+            foreach (int candidate in candidates)
             {
                 cell.SetValue(candidate);
                 structure.SetOccupied();
                 tryGrid = new SudokuGridSolver(grid.Copy());
                 try
                 {
-                    grid = new SudokuGrid(tryGrid.Solve(), 
+                    grid = new SudokuGrid(tryGrid.Solve(),
                         GetGridSize(grid.ToString()));
                     break;
                 }
