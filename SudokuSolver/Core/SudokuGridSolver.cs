@@ -84,6 +84,8 @@ namespace SudokuSolver.Core
             {
                 progressed = structure.RemoveCandidates() || progressed;
                 progressed = structure.HiddenSingle() || progressed;
+                progressed = structure.NakedPair() || progressed;
+                progressed = structure.HiddenPair() || progressed;
             }
                 return progressed;
         }

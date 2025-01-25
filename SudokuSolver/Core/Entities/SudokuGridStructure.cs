@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SudokuSolver.Core
 {
@@ -9,7 +10,7 @@ namespace SudokuSolver.Core
         private Cell[] cells;
         private readonly int gridSize;
         private HashSet<int> occupiedSet;
-        private Dictionary<int, List<Cell>> candidatesMap;
+        private Dictionary<int, HashSet<Cell>> candidatesMap;
 
         /// <summary>
         /// Initializes a grid structure with an array of cells and specified grid size
@@ -21,7 +22,7 @@ namespace SudokuSolver.Core
             this.cells = cells;
             occupiedSet = new HashSet<int>();
             this.gridSize = gridSize;
-            candidatesMap = new Dictionary<int, List<Cell>>();
+            candidatesMap = new Dictionary<int, HashSet<Cell>>();
             SetOccupied();
         }
 
@@ -136,6 +137,35 @@ namespace SudokuSolver.Core
             return false;
         }
 
+        public bool NakedPair()
+        {
+            int isPair;
+            Cell pair = null;
+            bool progressed = false;
+
+            foreach (Cell cell in cells)
+            {
+                if (cell.GetCandidates().Count() == 2)
+                {
+                    isPair = 1;
+                    foreach (Cell otherCell in cells)
+                        if (cell != otherCell && cell.GetCandidates().SequenceEqual(otherCell.GetCandidates()))
+                        {
+                            isPair += 1;
+                            pair = otherCell;
+                        }
+                    if (isPair == 2)
+                        foreach (Cell notPartOfPair in cells)
+                        {
+                            if (notPartOfPair != cell && notPartOfPair != pair)
+                                foreach(int candidate in cell.GetCandidates())
+                                    progressed = notPartOfPair.RemoveCandidate(candidate) || progressed;
+                        }
+                }
+            }
+            return progressed;
+        }
+
         /// <summary>
         /// A method which removes candidates from a cell, according to the Hidden Single technique
         /// </summary>
@@ -144,13 +174,49 @@ namespace SudokuSolver.Core
             bool progressed = false;
             SetCandidatesMap();
 
-            foreach (KeyValuePair<int, List<Cell>> kvp in candidatesMap)
+            foreach (KeyValuePair<int, HashSet<Cell>> kvp in candidatesMap)
             {
-                if (kvp.Value.Count == 1 && !kvp.Value[0].IsSolved())
+                if (kvp.Value.Count == 1 && !kvp.Value.First<Cell>().IsSolved())
                 {
-                    Cell cell = kvp.Value[0];
+                    Cell cell = kvp.Value.First<Cell>();
                     cell.SetCandidates(new HashSet<int>() { kvp.Key });
                     progressed = true;
+                }
+            }
+
+            return progressed;
+        }
+
+        /// <summary>
+        /// A method which removes candidates from a cell, according to the Hidden Pair technique
+        /// </summary>
+        /// <returns></returns>
+        public bool HiddenPair()
+        {
+            bool progressed = false;
+            int isPair, otherKey = 0;
+            SetCandidatesMap();
+
+            foreach (KeyValuePair<int, HashSet<Cell>> kvp in candidatesMap)
+            {
+                if (kvp.Value.Count == 2)
+                {
+                    isPair = 1;
+                    foreach (KeyValuePair<int, HashSet<Cell>> otherKvp in candidatesMap)
+                    {
+                        if (otherKvp.Key != kvp.Key && kvp.Value.SequenceEqual(otherKvp.Value))
+                        {
+                            isPair++;
+                            otherKey = otherKvp.Key;
+                        }
+                    }
+                    if (isPair == 2)
+                    {
+                        foreach (Cell cell in kvp.Value)
+                            cell.SetCandidates(new HashSet<int>() { kvp.Key, otherKey });
+
+                        progressed = true;
+                    }
                 }
             }
 
@@ -169,7 +235,7 @@ namespace SudokuSolver.Core
                     foreach (int candidate in cell.GetCandidates())
                     {
                         if (!candidatesMap.ContainsKey(candidate))
-                            candidatesMap[candidate] = new List<Cell>();
+                            candidatesMap[candidate] = new HashSet<Cell>();
 
                         candidatesMap[candidate].Add(cell);
                     }
