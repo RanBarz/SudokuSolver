@@ -139,34 +139,52 @@ namespace SudokuSolver.Core
 
         public bool NakedCombinations()
         {
-            int isCombinationSize;
             HashSet<Cell> cellsOfCombination = new HashSet<Cell>();
             bool progressed = false;
-            for (int combinationSize = 1; combinationSize < Math.Min(occupiedSet.Count, 5); combinationSize++)
+            for (int combinationSize = 1; combinationSize < occupiedSet.Count; combinationSize++)
             {
-                foreach (Cell cell in cells)
-                {
-                    if (cell.GetCandidates().Count() == combinationSize)
-                    {
-                        cellsOfCombination.Clear();
-                        cellsOfCombination.Add(cell);
-                        isCombinationSize = 1;
-                        foreach (Cell otherCell in cells)
-                            if (cell != otherCell && cell.GetCandidates().SequenceEqual(otherCell.GetCandidates()))
-                            {
-                                isCombinationSize += 1;
-                                cellsOfCombination.Add(otherCell);
-                            }
-                        if (isCombinationSize >= combinationSize)
-                            foreach (Cell notPartOfCombination in cells)
-                            {
-                                if (!cellsOfCombination.Contains(notPartOfCombination))
-                                    foreach (int candidate in cell.GetCandidates())
-                                        progressed = notPartOfCombination.RemoveCandidate(candidate) || progressed;
-                            }
-                    }
-                }
+                NakedCombinationSize(cellsOfCombination, ref progressed, combinationSize);
             }
+            return progressed;
+        }
+
+        private void NakedCombinationSize(HashSet<Cell> cellsOfCombination, ref bool progressed, int combinationSize)
+        {
+            foreach (Cell cell in cells)
+            {
+                 HandleNakedCombination(cellsOfCombination, ref progressed, combinationSize, cell);
+            }
+        }
+
+        private void HandleNakedCombination(HashSet<Cell> cellsOfCombination, ref bool progressed, int combinationSize, Cell cell)
+        {
+            int isCombinationSize;
+            if (cell.GetCandidates().Count() == combinationSize)
+            {
+                cellsOfCombination.Clear();
+                cellsOfCombination.Add(cell);
+                isCombinationSize = 1;
+                foreach (Cell otherCell in cells)
+                    if (cell != otherCell && cell.GetCandidates().SequenceEqual(otherCell.GetCandidates()))
+                    {
+                        isCombinationSize += 1;
+                        cellsOfCombination.Add(otherCell);
+                    }
+                if (isCombinationSize >= combinationSize)
+                    progressed = NakedRemoveCandidates(cellsOfCombination, progressed, cell);
+            }
+
+        }
+
+        private bool NakedRemoveCandidates(HashSet<Cell> cellsOfCombination, bool progressed, Cell cell)
+        {
+            foreach (Cell notPartOfCombination in cells)
+            {
+                if (!cellsOfCombination.Contains(notPartOfCombination))
+                    foreach (int candidate in cell.GetCandidates())
+                        progressed = notPartOfCombination.RemoveCandidate(candidate) || progressed;
+            }
+
             return progressed;
         }
 
@@ -185,42 +203,6 @@ namespace SudokuSolver.Core
                     Cell cell = kvp.Value.First<Cell>();
                     cell.SetCandidates(new HashSet<int>() { kvp.Key });
                     progressed = true;
-                }
-            }
-
-            return progressed;
-        }
-
-        /// <summary>
-        /// A method which removes candidates from a cell, according to the Hidden Pair technique
-        /// </summary>
-        /// <returns></returns>
-        public bool HiddenPair()
-        {
-            bool progressed = false;
-            int isPair, otherKey = 0;
-            SetCandidatesMap();
-
-            foreach (KeyValuePair<int, HashSet<Cell>> kvp in candidatesMap)
-            {
-                if (kvp.Value.Count == 2)
-                {
-                    isPair = 1;
-                    foreach (KeyValuePair<int, HashSet<Cell>> otherKvp in candidatesMap)
-                    {
-                        if (otherKvp.Key != kvp.Key && kvp.Value.SequenceEqual(otherKvp.Value))
-                        {
-                            isPair++;
-                            otherKey = otherKvp.Key;
-                        }
-                    }
-                    if (isPair == 2)
-                    {
-                        foreach (Cell cell in kvp.Value)
-                            cell.SetCandidates(new HashSet<int>() { kvp.Key, otherKey });
-
-                        progressed = true;
-                    }
                 }
             }
 
