@@ -20,10 +20,11 @@ namespace SudokuSolver.UI
         , RESULT_MESSAGE = "\nThe solution to this grid is: "
         , SHOW_INPUT_MESSAGE = "The grid you entered looks as follows: ";
 
-        public static void StartSudokuSolver(int gridSize)
+        public static void StartSudokuSolver()
         {
             DisableProgramTermination();
 
+            int gridSize = 0;
             SudokuGridSolver solver = null;
             Stopwatch stopwatch = new Stopwatch();
             string input = "";
@@ -35,7 +36,7 @@ namespace SudokuSolver.UI
                 exceptionThrown = false;
                 try
                 {
-                    solver = GetInput(ref input, solver, gridSize, ref graphicMode);
+                    solver = GetInput(ref input, ref gridSize, ref graphicMode);
                     if (solver != null)
                         ShowOutput(solver, stopwatch, graphicMode, gridSize);
                 }
@@ -73,14 +74,33 @@ namespace SudokuSolver.UI
             PrintGreen($"It was solved in {stopwatch.ElapsedMilliseconds} ms.");
         }
 
-        private static SudokuGridSolver GetInput(ref string input, SudokuGridSolver solver, 
-            int gridSize, ref bool graphicMode)
+        private static SudokuGridSolver GetInput(ref string input, 
+            ref int gridSize, ref bool graphicMode)
         {
-            string[] parameters;
+            SudokuGridSolver solver;
             PrintBlue(MENU_MESSAGE);
             input = Console.ReadLine();
+            input = HandleInput(input, ref graphicMode);
+            Console.Clear();
+            if (input.Equals("exit"))
+                return null;
+            SudokuGridValidator.ValidateLegalStringOfGrid(input);
+            gridSize = SudokuGridSolver.GetGridSize(input);
+            PrintBlue(SHOW_INPUT_MESSAGE);
+            if (graphicMode)
+                PrintSudokuGrid(input, gridSize);
+            else
+                PrintBlue(input);
+            solver = new SudokuGridSolver(input);
+            return solver;
+        }
+
+        private static string HandleInput(string input, ref bool graphicMode)
+        {
+            string[] parameters;
+
             SudokuGridValidator.ValidateInput(input);
-            parameters = input.Split(new char[] {' ', '\n', '\t'}, StringSplitOptions.RemoveEmptyEntries);
+            parameters = input.Split(new char[] { ' ', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries);
             SudokuGridValidator.ValidateParameters(parameters, MAX_PARAMETERS, MIN_PARAMETERS);
             input = parameters[0];
             if (parameters.Length > 1)
@@ -92,17 +112,7 @@ namespace SudokuSolver.UI
             }
             else
                 graphicMode = true;
-            Console.Clear();
-            if (input.Equals("exit"))
-                return null;
-            SudokuGridValidator.ValidateLegalStringOfGrid(input, gridSize);
-            PrintBlue(SHOW_INPUT_MESSAGE);
-            if (graphicMode)
-                PrintSudokuGrid(input, gridSize);
-            else
-                PrintBlue(input);
-            solver = new SudokuGridSolver(input);
-            return solver;
+            return input;
         }
 
         public static void PrintSudokuGrid(string grid, int gridSize)

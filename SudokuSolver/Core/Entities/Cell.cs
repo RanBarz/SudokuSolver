@@ -91,7 +91,8 @@ namespace SudokuSolver.Core
         /// </summary>
         public override string ToString()
         {
-            return value.ToString();
+            string str = ((char) (value + '0')).ToString();
+            return str;
         }
 
         /// <summary>

@@ -27,7 +27,7 @@ namespace SudokuSolver.Core
             this.grid = grid;
         }
 
-        private static int GetGridSize(string grid)
+        public static int GetGridSize(string grid)
         {
             return (int) Math.Sqrt(grid.Length);
         }
@@ -85,7 +85,6 @@ namespace SudokuSolver.Core
                 progressed = structure.RemoveCandidates() || progressed;
                 progressed = structure.HiddenSingle() || progressed;
                 progressed = structure.NakedPair() || progressed;
-                progressed = structure.HiddenPair() || progressed;
             }
                 return progressed;
         }

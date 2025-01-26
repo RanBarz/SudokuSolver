@@ -57,21 +57,23 @@ namespace SudokuSolver.Core
         /// <summary>
         /// A method which throws an exception if a string representation of a grid isn't legal.
         /// </summary>
-        public static void ValidateLegalStringOfGrid(string grid, int gridSize)
+        public static void ValidateLegalStringOfGrid(string grid)
         {
-            ValidateHasProperSize(grid, gridSize);
+            int gridSize = ValidateHasProperSize(grid);
             ValidateHasProperChars(grid, gridSize);
         }
 
         /// <summary>
         /// A method which throws an exception if a string representation of a grid isn't of legal size.
         /// </summary>
-        public static void ValidateHasProperSize(string grid, int gridSize)
+        public static int ValidateHasProperSize(string grid)
         {
-            if (grid.Length != gridSize * gridSize)
+            double rootOfLength = Math.Sqrt(grid.Length);
+            if (Math.Sqrt(rootOfLength) % 1 != 0)
                 throw new IllegalStringOfSudokuGridException(
                     $"The string reprsentation of the grid has {grid.Length} characters, " +
-                    $"instead of {gridSize * gridSize}.");
+                    $"which square root isn't a natural number..");
+            return (int) rootOfLength;
         }
 
         /// <summary>
