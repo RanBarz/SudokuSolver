@@ -137,30 +137,34 @@ namespace SudokuSolver.Core
             return false;
         }
 
-        public bool NakedPair()
+        public bool NakedCombinations()
         {
-            int isPair;
-            Cell pair = null;
+            int isCombinationSize;
+            HashSet<Cell> cellsOfCombination = new HashSet<Cell>();
             bool progressed = false;
-
-            foreach (Cell cell in cells)
+            for (int combinationSize = 1; combinationSize < Math.Min(occupiedSet.Count, 5); combinationSize++)
             {
-                if (cell.GetCandidates().Count() == 2)
+                foreach (Cell cell in cells)
                 {
-                    isPair = 1;
-                    foreach (Cell otherCell in cells)
-                        if (cell != otherCell && cell.GetCandidates().SequenceEqual(otherCell.GetCandidates()))
-                        {
-                            isPair += 1;
-                            pair = otherCell;
-                        }
-                    if (isPair == 2)
-                        foreach (Cell notPartOfPair in cells)
-                        {
-                            if (notPartOfPair != cell && notPartOfPair != pair)
-                                foreach(int candidate in cell.GetCandidates())
-                                    progressed = notPartOfPair.RemoveCandidate(candidate) || progressed;
-                        }
+                    if (cell.GetCandidates().Count() == combinationSize)
+                    {
+                        cellsOfCombination.Clear();
+                        cellsOfCombination.Add(cell);
+                        isCombinationSize = 1;
+                        foreach (Cell otherCell in cells)
+                            if (cell != otherCell && cell.GetCandidates().SequenceEqual(otherCell.GetCandidates()))
+                            {
+                                isCombinationSize += 1;
+                                cellsOfCombination.Add(otherCell);
+                            }
+                        if (isCombinationSize >= combinationSize)
+                            foreach (Cell notPartOfCombination in cells)
+                            {
+                                if (!cellsOfCombination.Contains(notPartOfCombination))
+                                    foreach (int candidate in cell.GetCandidates())
+                                        progressed = notPartOfCombination.RemoveCandidate(candidate) || progressed;
+                            }
+                    }
                 }
             }
             return progressed;

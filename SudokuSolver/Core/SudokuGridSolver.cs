@@ -83,8 +83,8 @@ namespace SudokuSolver.Core
             foreach (SudokuGridStructure structure in arr)
             {
                 progressed = structure.RemoveCandidates() || progressed;
+                progressed = structure.NakedCombinations() || progressed;
                 progressed = structure.HiddenSingle() || progressed;
-                progressed = structure.NakedPair() || progressed;
             }
                 return progressed;
         }

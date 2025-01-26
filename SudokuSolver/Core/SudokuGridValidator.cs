@@ -44,8 +44,6 @@ namespace SudokuSolver.Core
         /// A method which receives an array of grid structures. and returns true if one of them has a
         /// duplicate value.
         /// </summary>
-        /// <param name="arr"></param>
-        /// <returns></returns>
         public static bool GridStructureArrayHasDuplicates(SudokuGridStructure[] arr)
         {
             foreach (SudokuGridStructure structure in arr)
