@@ -7,6 +7,8 @@ namespace SudokuSolver.Core
     /// <summary>Base class for row, column, and subgrid structures in the Sudoku grid.</summary>
     internal abstract class SudokuGridStructure
     {
+        private const int MAX_FOR_NAKED_COMBINATIONS = 9;
+        private const int NAKED_SIZE_FOR_LARGE_GRIDS = 2;
         private Cell[] cells;
         private readonly int gridSize;
         private HashSet<int> occupiedSet;
@@ -143,7 +145,9 @@ namespace SudokuSolver.Core
 
             List<HashSet<Cell>> allCombinations = new List<HashSet<Cell>>();
             bool progressed = false;
-            for (int combinationSize = 2; combinationSize < gridSize - 1; combinationSize++)
+            int nakedSize = gridSize > MAX_FOR_NAKED_COMBINATIONS ? NAKED_SIZE_FOR_LARGE_GRIDS : gridSize;
+
+            for (int combinationSize = 2; combinationSize < Math.Min(gridSize - 1, nakedSize); combinationSize++)
             {
                 allCombinations.Clear();
                 allCombinations = GetAllCombinations(cells, combinationSize);
