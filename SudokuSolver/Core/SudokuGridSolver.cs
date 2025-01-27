@@ -57,7 +57,7 @@ namespace SudokuSolver.Core
         private void ApplySolvingMethods(SudokuGridStructure[] rows, SudokuGridStructure[] cols, SudokuGridStructure[] subgrids)
         {
             bool progressed = true;
-
+            int index = 0;
             while (!grid.IsSolved() && progressed)
             {
                 progressed = RemoveCandidatesSudokuGridStructureArray(rows);
@@ -70,6 +70,7 @@ namespace SudokuSolver.Core
                     throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
                 if (!progressed && !grid.IsSolved())
                     Backtrack();
+                index++;
             }
         }
 

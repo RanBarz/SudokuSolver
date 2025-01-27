@@ -139,53 +139,75 @@ namespace SudokuSolver.Core
 
         public bool NakedCombinations()
         {
-            HashSet<Cell> cellsOfCombination = new HashSet<Cell>();
+            SetOccupied();
+
+            List<HashSet<Cell>> allCombinations = new List<HashSet<Cell>>();
             bool progressed = false;
-            for (int combinationSize = 1; combinationSize < occupiedSet.Count; combinationSize++)
+            for (int combinationSize = 2; combinationSize < gridSize - 1; combinationSize++)
             {
-                NakedCombinationSize(cellsOfCombination, ref progressed, combinationSize);
+                allCombinations.Clear();
+                allCombinations = GetAllCombinations(cells, combinationSize);
+                HandleNakedCombinations(allCombinations, ref progressed, combinationSize);
             }
             return progressed;
         }
 
-        private void NakedCombinationSize(HashSet<Cell> cellsOfCombination, ref bool progressed, int combinationSize)
+
+        private void HandleNakedCombinations(List<HashSet<Cell>> cellsOfCombination, ref bool progressed, int combinationSize)
         {
+            HashSet<int> allCandidates;
+            foreach (HashSet<Cell> combination in cellsOfCombination)
+            {
+                allCandidates = GetAllCandidates(combination);
+                if (allCandidates.Count == combinationSize)
+                {
+                    foreach (Cell cell in cells)
+                    {
+                        if (!combination.Contains(cell))
+                        {
+                            foreach (int candidate in allCandidates)
+                                progressed = cell.RemoveCandidate(candidate) || progressed;
+                        }
+                    }
+                }
+            }
+        }
+
+        private HashSet<int> GetAllCandidates(HashSet<Cell> cells)
+        {
+            HashSet<int> allCandidates = new HashSet<int>();
             foreach (Cell cell in cells)
             {
-                 HandleNakedCombination(cellsOfCombination, ref progressed, combinationSize, cell);
+                allCandidates.UnionWith(cell.GetCandidates());
             }
+            return allCandidates;
         }
 
-        private void HandleNakedCombination(HashSet<Cell> cellsOfCombination, ref bool progressed, int combinationSize, Cell cell)
+        private static List<HashSet<Cell>> GetAllCombinations(Cell[] cells, int combinationSize)
         {
-            int isCombinationSize;
-            if (cell.GetCandidates().Count() == combinationSize)
+            List<HashSet<Cell>> allCombinations = new List<HashSet<Cell>>();
+
+            if (combinationSize == 0)
             {
-                cellsOfCombination.Clear();
-                cellsOfCombination.Add(cell);
-                isCombinationSize = 1;
-                foreach (Cell otherCell in cells)
-                    if (cell != otherCell && cell.GetCandidates().SequenceEqual(otherCell.GetCandidates()))
+                allCombinations.Add(new HashSet<Cell>());
+                return allCombinations;
+            }
+
+            for (int i = 0; i < cells.Length - combinationSize; i++)
+            {
+                if (!cells[i].IsSolved())
+                {
+                    List<HashSet<Cell>> leftCombinations =
+                        GetAllCombinations(cells.Skip(i + 1).ToArray(), combinationSize - 1);
+                    foreach (HashSet<Cell> combination in leftCombinations)
                     {
-                        isCombinationSize += 1;
-                        cellsOfCombination.Add(otherCell);
+                        HashSet<Cell> outcome = new HashSet<Cell>() { cells[i] };
+                        outcome.UnionWith(combination);
+                        allCombinations.Add(outcome);
                     }
-                if (isCombinationSize >= combinationSize)
-                    progressed = NakedRemoveCandidates(cellsOfCombination, progressed, cell);
+                }
             }
-
-        }
-
-        private bool NakedRemoveCandidates(HashSet<Cell> cellsOfCombination, bool progressed, Cell cell)
-        {
-            foreach (Cell notPartOfCombination in cells)
-            {
-                if (!cellsOfCombination.Contains(notPartOfCombination))
-                    foreach (int candidate in cell.GetCandidates())
-                        progressed = notPartOfCombination.RemoveCandidate(candidate) || progressed;
-            }
-
-            return progressed;
+            return allCombinations;
         }
 
         /// <summary>
