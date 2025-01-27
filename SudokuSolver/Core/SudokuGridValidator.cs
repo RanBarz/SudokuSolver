@@ -16,6 +16,7 @@ namespace SudokuSolver.Core
     internal class SudokuGridValidator
     {
         private const string FILE_PATH_EXTENSION = ".txt";
+        private const int LARGEST_GRID = 25;
         /// <summary>
         /// Returns true if an unsolved cell has no candidates.
         /// </summary>
@@ -69,7 +70,7 @@ namespace SudokuSolver.Core
         public static int ValidateHasProperSize(string grid)
         {
             double rootOfLength = Math.Sqrt(grid.Length);
-            if (Math.Sqrt(rootOfLength) % 1 != 0)
+            if (Math.Sqrt(rootOfLength) % 1 != 0 || rootOfLength > LARGEST_GRID)
                 throw new IllegalStringOfSudokuGridException(
                     $"The string reprsentation of the grid has {grid.Length} characters, " +
                     $"which square root isn't a natural number..");

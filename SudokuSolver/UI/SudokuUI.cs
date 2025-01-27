@@ -14,10 +14,16 @@ namespace SudokuSolver.UI
         protected const int MAX_PARAMETERS = 2, MIN_PARAMETERS = 1;
         protected const string START_MESSAGE = "Welcome to the Omega Sudoku Solver.\n" +
             "Instructions:\n" +
-            "-\tEnter a string that is 81 characters long.\n" +
-            "-\tEach character should be a digit between 0 and 9.\n" +
-            "-\tZero represents an empty cell.\n" +
-            "-\tEvery nine cells represent a row (from the top down).\n"
+            "-\tYou can either enter a string that represents a grid, or a file path.\n" +
+            "-\tFile:\n" +
+            "\t-\tEnter the name of a txt file.\n" +
+            "\t-\tThe text inside the file must follow the rules of a string representation.\n" +
+            "-\tString:\n" +
+            "\t-\tEnter a string which has the same amount of characters as " +
+            "the number of cells in your Sudoku grid.\n" +
+            "\t-\tZero represents an empty cell.\n" +
+            "\t-\tEach character represents a number that is its difference from Zero in ascii.\n" +
+            "\t-\tThe largest grid acceptable is 25x25.\n"
         , MENU_MESSAGE = "\nEnter a Sudoku grid (or 'exit', " +
             "you can add ' -s' for string representation):"
         , RESULT_MESSAGE = "\nThe solution to this grid is: "
@@ -41,14 +47,23 @@ namespace SudokuSolver.UI
                 try
                 {
                     GetInput(ref input, ref graphicMode);
+                    stopwatch.Reset();
+                    stopwatch.Start();
                     if (!input.Equals("exit"))
-                        ShowOutput(input, stopwatch, graphicMode);
+                        ShowOutput(input, graphicMode);
+                    stopwatch.Stop();
+                    PrintGreen($"The algorithm took {stopwatch.ElapsedMilliseconds} ms.");
                 }
                 catch (Exception ex) when (ex is IllegalStringOfSudokuGridException ||
-                            ex is UnsolvableSudokuGridException ||
                             ex is ArgumentException)
                 {
                     PrintRed(ex.Message);
+                }
+                catch (UnsolvableSudokuGridException ex)
+                {
+                    PrintRed(ex.Message);
+                    stopwatch.Stop();
+                    PrintGreen($"The algorithm took {stopwatch.ElapsedMilliseconds} ms.");
                 }
             }
         }
@@ -61,20 +76,16 @@ namespace SudokuSolver.UI
             };
         }
 
-        private static void ShowOutput(string grid, Stopwatch stopwatch, bool graphicMode)
+        private static void ShowOutput(string grid, bool graphicMode)
         {
             SudokuGridSolver solver = new SudokuGridSolver(grid);
             string solution;
             PrintGreen(RESULT_MESSAGE);
-            stopwatch.Reset();
-            stopwatch.Start();
             solution = solver.Solve();
-            stopwatch.Stop();
             if (graphicMode)
                 PrintSudokuGrid(solution);
             else
                 PrintGreen(solution);
-            PrintGreen($"It was solved in {stopwatch.ElapsedMilliseconds} ms.");
         }
 
         public static void GetInput(ref string input, ref bool graphicMode)
