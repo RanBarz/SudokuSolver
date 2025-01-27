@@ -72,10 +72,10 @@ namespace SudokuSolver.Tests
             if (expected.Equals(actual))
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUI.PrintGreen($"{testName} passed!");
+                SudokuUI.PrintGreen($"{testName} passed!");
             }
             else
-                ConsoleUI.PrintRed($"{testName} failed: expected {expected}\n" +
+                SudokuUI.PrintRed($"{testName} failed: expected {expected}\n" +
                     $", but got {actual}.");
         }
     }

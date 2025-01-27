@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace SudokuSolver.Core
     /// </summary>
     internal class SudokuGridValidator
     {
+        private const string FILE_PATH_EXTENSION = ".txt";
         /// <summary>
         /// Returns true if an unsolved cell has no candidates.
         /// </summary>
@@ -117,5 +119,13 @@ namespace SudokuSolver.Core
     
         public static bool EnoughParams(string[] parameters, int minParameters) 
             => parameters.Length >= minParameters;
+
+        public static void ValidateFile(string filePath)
+        {
+            string extension = Path.GetExtension(filePath).ToLower();
+            if (!extension.Equals(FILE_PATH_EXTENSION))
+                throw new IllegalFileOfSudokuGridException("The file containing" +
+                    " the grid must have '.txt' extension");
+        }
     }
 }
