@@ -121,6 +121,10 @@ namespace SudokuSolver.Core
         public static bool EnoughParams(string[] parameters, int minParameters) 
             => parameters.Length >= minParameters;
 
+        /// <summary>
+        /// A method which validates that a file is of the right type for Sudoku.
+        /// </summary>
+        /// <exception cref="IllegalFileOfSudokuGridException"></exception>
         public static void ValidateFile(string filePath)
         {
             string extension = Path.GetExtension(filePath).ToLower();

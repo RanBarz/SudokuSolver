@@ -63,9 +63,9 @@ namespace SudokuSolver.Core
                 progressed = RemoveCandidatesSudokuGridStructureArray(rows);
                 progressed = RemoveCandidatesSudokuGridStructureArray(cols) || progressed;
                 progressed = RemoveCandidatesSudokuGridStructureArray(subgrids) || progressed;
-                progressed = SingleCandidateSudokuGridStructureArray(rows) || progressed;
-                progressed = SingleCandidateSudokuGridStructureArray(cols) || progressed;
-                progressed = SingleCandidateSudokuGridStructureArray(subgrids) || progressed;
+                progressed = NakedSingleSudokuGridStructureArray(rows) || progressed;
+                progressed = NakedSingleSudokuGridStructureArray(cols) || progressed;
+                progressed = NakedSingleSudokuGridStructureArray(subgrids) || progressed;
                 if (SudokuGridValidator.IsUnsolvable(grid) || SudokuGridValidator.IsInvalid(grid))
                     throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
                 if (!progressed && !grid.IsSolved())
@@ -83,9 +83,9 @@ namespace SudokuSolver.Core
             bool progressed = false;
             foreach (SudokuGridStructure structure in arr)
             {
-                progressed = structure.RemoveCandidates() || progressed;
-                progressed = structure.NakedCombinations() || progressed;
-                progressed = structure.HiddenSingle() || progressed;
+                progressed = SudokuHeuristics.RemoveCandidates(structure) || progressed;
+                progressed = SudokuHeuristics.NakedCombinations(structure) || progressed;
+                progressed = SudokuHeuristics.HiddenSingle(structure) || progressed;
             }
                 return progressed;
         }
@@ -95,10 +95,10 @@ namespace SudokuSolver.Core
         /// which only have one candidate
         /// </summary>
         /// <returns>True if any progress was made in solving</returns>
-        public static bool SingleCandidateSudokuGridStructureArray(SudokuGridStructure[] arr)
+        public static bool NakedSingleSudokuGridStructureArray(SudokuGridStructure[] arr)
         {
             foreach (SudokuGridStructure structure in arr)
-                if (structure.SingleCandidate())
+                if (SudokuHeuristics.NakedSingle(structure))
                     return true;
             return false;
         }

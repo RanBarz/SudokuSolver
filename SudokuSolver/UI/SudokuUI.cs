@@ -50,9 +50,11 @@ namespace SudokuSolver.UI
                     stopwatch.Reset();
                     stopwatch.Start();
                     if (!input.Equals("exit"))
+                    {
                         ShowOutput(input, graphicMode);
-                    stopwatch.Stop();
-                    PrintGreen($"The algorithm took {stopwatch.ElapsedMilliseconds} ms.");
+                        stopwatch.Stop();
+                        PrintGreen($"The algorithm took {stopwatch.ElapsedMilliseconds} ms.");
+                    }
                 }
                 catch (Exception ex) when (ex is IllegalStringOfSudokuGridException ||
                             ex is ArgumentException)

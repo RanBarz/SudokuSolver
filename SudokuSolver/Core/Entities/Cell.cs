@@ -77,7 +77,7 @@ namespace SudokuSolver.Core
 
         /// <summary>
         /// Returns an array of all current candidate values
-        /// </summary>
+        /// </summary>1
         public int[] GetCandidates() => candidatesSet.ToArray<int>();
 
         /// <summary>

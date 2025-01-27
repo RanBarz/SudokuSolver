@@ -66,12 +66,12 @@ namespace SudokuSolver.Core
         public void SetRows(Cell[] cells)
         {
             Cell[] cellsOfRow = new Cell[gridSize];
-            rows = new Row[gridSize];
+            rows = new SudokuGridStructure[gridSize];
             for (int i = 0; i < gridSize; i++)
             {
                 for (int j  = 0; j < gridSize; j++)
                     cellsOfRow[j] = cells[j + i * gridSize];
-                rows[i] = new Row((Cell[])cellsOfRow.Clone(), gridSize);
+                rows[i] = new SudokuGridStructure((Cell[])cellsOfRow.Clone(), gridSize);
             }
         }
 
@@ -81,12 +81,12 @@ namespace SudokuSolver.Core
         public void SetCols(Cell[] cells) 
         {
             Cell[] cellsOfCol = new Cell[gridSize];
-            cols = new Column[gridSize];
+            cols = new SudokuGridStructure[gridSize];
             for (int i = 0; i < gridSize; i++)
             {
                 for (int j = 0; j < gridSize; j++)
                     cellsOfCol[j] = cells[i + j * gridSize];
-                cols[i] = new Column((Cell[])cellsOfCol.Clone(), gridSize);
+                cols[i] = new SudokuGridStructure((Cell[])cellsOfCol.Clone(), gridSize);
             }
         }
 
@@ -96,7 +96,7 @@ namespace SudokuSolver.Core
         public void SetSubgrids(Cell[] cells)
         {
             int subgridSize = (int)Math.Sqrt(gridSize);
-            subgrids = new Subgrid[gridSize];
+            subgrids = new SudokuGridStructure[gridSize];
 
             for (int subgridRow = 0; subgridRow < subgridSize; subgridRow++)
             {
@@ -104,7 +104,7 @@ namespace SudokuSolver.Core
                 {
                     Cell[] cellsInCurrentSubgrid = ExtractCellsForSubgrid(cells, subgridRow, subgridCol, subgridSize);
                     int subgridIndex = CalculateSubgridIndex(subgridRow, subgridCol, subgridSize);
-                    subgrids[subgridIndex] = new Subgrid((Cell[])cellsInCurrentSubgrid.Clone(), gridSize);
+                    subgrids[subgridIndex] = new SudokuGridStructure((Cell[])cellsInCurrentSubgrid.Clone(), gridSize);
                 }
             }
         }
@@ -225,7 +225,7 @@ namespace SudokuSolver.Core
 
             foreach (SudokuGridStructure structure in arr)
             {
-                structure.RemoveCandidates();
+                SudokuHeuristics.RemoveCandidates(structure);
                 if (structure.GetOccupiedCount() > maxOccupied &&
                     structure.GetOccupiedCount() != gridSize)
                 {

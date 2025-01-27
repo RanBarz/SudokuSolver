@@ -5,10 +5,8 @@ using System.Linq;
 namespace SudokuSolver.Core
 {
     /// <summary>Base class for row, column, and subgrid structures in the Sudoku grid.</summary>
-    internal abstract class SudokuGridStructure
+    internal class SudokuGridStructure
     {
-        private const int MAX_FOR_NAKED_COMBINATIONS = 9;
-        private const int NAKED_SIZE_FOR_LARGE_GRIDS = 2;
         private Cell[] cells;
         private readonly int gridSize;
         private HashSet<int> occupiedSet;
@@ -58,41 +56,6 @@ namespace SudokuSolver.Core
         /// Returns the number of cells that have been assigned values in this structure
         /// </summary>
         public int GetOccupiedCount() => occupiedSet.Count;
-
-        /// <summary>
-        /// Checks each cell for single remaining candidate and fills if found
-        /// </summary>
-        /// <returns>True if any cell was filled</returns>
-        public bool SingleCandidate()
-        {
-            bool madeProgress = false;
-            RemoveCandidates();
-            SetOccupied();
-
-            foreach (Cell cell in cells)
-                if (cell.ShouldFill())
-                {
-                    cell.SetValue();
-                    SetOccupied();
-                    RemoveCandidates();
-                    madeProgress = true;
-                }
-            return madeProgress;
-        }
-
-        /// <summary>
-        /// Removes invalid candidates based on current cell values.
-        /// </summary>
-        public bool RemoveCandidates()
-        {
-            HashSet<Cell> removedFrom = new HashSet<Cell>();
-            SetOccupied();
-            foreach (Cell cell in cells)
-                foreach (int occupied in occupiedSet)
-                    if (cell.RemoveCandidate(occupied) && !cell.IsSolved())
-                        removedFrom.Add(cell);
-            return removedFrom.Count > 0;
-        }
         
         /// <summary>
         /// A method which returns the cell with the least candidates in a structure
@@ -139,106 +102,18 @@ namespace SudokuSolver.Core
             return false;
         }
 
-        public bool NakedCombinations()
-        {
-            SetOccupied();
+        public int GetGridSize() => gridSize;
 
-            List<HashSet<Cell>> allCombinations = new List<HashSet<Cell>>();
-            bool progressed = false;
-            int nakedSize = gridSize > MAX_FOR_NAKED_COMBINATIONS ? NAKED_SIZE_FOR_LARGE_GRIDS : gridSize;
+        public Cell[] GetCells() => cells;
 
-            for (int combinationSize = 2; combinationSize < Math.Min(gridSize - 1, nakedSize); combinationSize++)
-            {
-                allCombinations.Clear();
-                allCombinations = GetAllCombinations(cells, combinationSize);
-                HandleNakedCombinations(allCombinations, ref progressed, combinationSize);
-            }
-            return progressed;
-        }
+        public Dictionary<int, HashSet<Cell>> GetCandidatesMap() => candidatesMap;
 
-
-        private void HandleNakedCombinations(List<HashSet<Cell>> cellsOfCombination, ref bool progressed, int combinationSize)
-        {
-            HashSet<int> allCandidates;
-            foreach (HashSet<Cell> combination in cellsOfCombination)
-            {
-                allCandidates = GetAllCandidates(combination);
-                if (allCandidates.Count == combinationSize)
-                {
-                    foreach (Cell cell in cells)
-                    {
-                        if (!combination.Contains(cell))
-                        {
-                            foreach (int candidate in allCandidates)
-                                progressed = cell.RemoveCandidate(candidate) || progressed;
-                        }
-                    }
-                }
-            }
-        }
-
-        private HashSet<int> GetAllCandidates(HashSet<Cell> cells)
-        {
-            HashSet<int> allCandidates = new HashSet<int>();
-            foreach (Cell cell in cells)
-            {
-                allCandidates.UnionWith(cell.GetCandidates());
-            }
-            return allCandidates;
-        }
-
-        private static List<HashSet<Cell>> GetAllCombinations(Cell[] cells, int combinationSize)
-        {
-            List<HashSet<Cell>> allCombinations = new List<HashSet<Cell>>();
-
-            if (combinationSize == 0)
-            {
-                allCombinations.Add(new HashSet<Cell>());
-                return allCombinations;
-            }
-
-            for (int i = 0; i < cells.Length - combinationSize; i++)
-            {
-                if (!cells[i].IsSolved())
-                {
-                    List<HashSet<Cell>> leftCombinations =
-                        GetAllCombinations(cells.Skip(i + 1).ToArray(), combinationSize - 1);
-                    foreach (HashSet<Cell> combination in leftCombinations)
-                    {
-                        HashSet<Cell> outcome = new HashSet<Cell>() { cells[i] };
-                        outcome.UnionWith(combination);
-                        allCombinations.Add(outcome);
-                    }
-                }
-            }
-            return allCombinations;
-        }
-
-        /// <summary>
-        /// A method which removes candidates from a cell, according to the Hidden Single technique
-        /// </summary>
-        public bool HiddenSingle()
-        {
-            bool progressed = false;
-            SetCandidatesMap();
-
-            foreach (KeyValuePair<int, HashSet<Cell>> kvp in candidatesMap)
-            {
-                if (kvp.Value.Count == 1 && !kvp.Value.First<Cell>().IsSolved())
-                {
-                    Cell cell = kvp.Value.First<Cell>();
-                    cell.SetCandidates(new HashSet<int>() { kvp.Key });
-                    progressed = true;
-                }
-            }
-
-            return progressed;
-        }
+        public HashSet<int> GetOccupiedSet() => occupiedSet;
 
         /// <summary>
         /// A method which sets the candidatesMap of a structure
         /// </summary>
-        private void SetCandidatesMap()
+        public void SetCandidatesMap()
         {
             candidatesMap.Clear();
 
