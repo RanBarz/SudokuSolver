@@ -125,13 +125,11 @@ namespace SudokuSolver.Core
         {
             bool madeProgress = false;
             RemoveCandidates(structure);
-            structure.SetOccupied();
 
             foreach (Cell cell in structure.GetCells())
                 if (cell.ShouldFill())
                 {
                     cell.SetValue();
-                    structure.SetOccupied();
                     RemoveCandidates(structure);
                     madeProgress = true;
                 }

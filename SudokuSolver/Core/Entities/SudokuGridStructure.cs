@@ -129,6 +129,8 @@ namespace SudokuSolver.Core
             }
         }
 
+        public bool IsSolved() => occupiedSet.Count == gridSize;
+
         /// <summary>
         /// Returns a string representation of all cells in this structure
         /// </summary>

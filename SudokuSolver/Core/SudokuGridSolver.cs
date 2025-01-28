@@ -57,20 +57,15 @@ namespace SudokuSolver.Core
         private void ApplySolvingMethods(SudokuGridStructure[] rows, SudokuGridStructure[] cols, SudokuGridStructure[] subgrids)
         {
             bool progressed = true;
-            int index = 0;
             while (!grid.IsSolved() && progressed)
             {
                 progressed = RemoveCandidatesSudokuGridStructureArray(rows);
                 progressed = RemoveCandidatesSudokuGridStructureArray(cols) || progressed;
                 progressed = RemoveCandidatesSudokuGridStructureArray(subgrids) || progressed;
-                progressed = NakedSingleSudokuGridStructureArray(rows) || progressed;
-                progressed = NakedSingleSudokuGridStructureArray(cols) || progressed;
-                progressed = NakedSingleSudokuGridStructureArray(subgrids) || progressed;
                 if (SudokuGridValidator.IsUnsolvable(grid) || SudokuGridValidator.IsInvalid(grid))
                     throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
                 if (!progressed && !grid.IsSolved())
                     Backtrack();
-                index++;
             }
         }
 
@@ -83,24 +78,14 @@ namespace SudokuSolver.Core
             bool progressed = false;
             foreach (SudokuGridStructure structure in arr)
             {
-                progressed = SudokuHeuristics.RemoveCandidates(structure) || progressed;
-                progressed = SudokuHeuristics.NakedCombinations(structure) || progressed;
-                progressed = SudokuHeuristics.HiddenSingle(structure) || progressed;
+                if (!structure.IsSolved())
+                {
+                    progressed = SudokuHeuristics.NakedSingle(structure) || progressed;
+                    progressed = SudokuHeuristics.NakedCombinations(structure) || progressed;
+                    progressed = SudokuHeuristics.HiddenSingle(structure) || progressed;
+                }
             }
                 return progressed;
-        }
-
-        /// <summary>
-        /// A method which receives an array of sudoku grid structures and fills cells,
-        /// which only have one candidate
-        /// </summary>
-        /// <returns>True if any progress was made in solving</returns>
-        public static bool NakedSingleSudokuGridStructureArray(SudokuGridStructure[] arr)
-        {
-            foreach (SudokuGridStructure structure in arr)
-                if (SudokuHeuristics.NakedSingle(structure))
-                    return true;
-            return false;
         }
 
         /// <summary>
