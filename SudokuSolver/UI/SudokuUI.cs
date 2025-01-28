@@ -8,7 +8,7 @@ namespace SudokuSolver.UI
     /// <summary>
     /// A class which offers utilty functions for a sudoku solver UI.
     /// </summary>
-    internal class SudokuUI
+    public class SudokuUI
     {
         /// <summary>
         /// A method which stars the UI which receives a sudoku grid and returns its solution.

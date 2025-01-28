@@ -8,7 +8,7 @@ namespace SudokuSolver.Core
     /// The class offering a solving algorithm, 
     /// to a string representation of a Sudoku grid.
     /// </summary>
-    internal class SudokuGridSolver
+    public class SudokuGridSolver
     {
         private SudokuGrid grid;
 
@@ -73,7 +73,7 @@ namespace SudokuSolver.Core
         /// Applies solving strategies to an array of grid structures (rows, columns, or subgrids)
         /// </summary>
         /// <returns>True if any progress was made in solving</returns>
-        public static bool RemoveCandidatesSudokuGridStructureArray(SudokuGridStructure[] arr)
+        internal static bool RemoveCandidatesSudokuGridStructureArray(SudokuGridStructure[] arr)
         {
             bool progressed = false;
             foreach (SudokuGridStructure structure in arr)
@@ -102,7 +102,7 @@ namespace SudokuSolver.Core
         /// <summary>
         /// A method which trys solving the grid by "guessing" a specific cell's values.
         /// </summary>
-        public void RecursiveSolve(Cell cell, HashSet<int> candidates, SudokuGridStructure structure)
+        internal void RecursiveSolve(Cell cell, HashSet<int> candidates, SudokuGridStructure structure)
         {
             SudokuGridSolver tryGrid;
 

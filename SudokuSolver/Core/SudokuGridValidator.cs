@@ -13,14 +13,14 @@ namespace SudokuSolver.Core
     /// The class offering validation to both string representation of sudoku grids,
     /// and objects of them.
     /// </summary>
-    internal class SudokuGridValidator
+    public class SudokuGridValidator
     {
         private const string FILE_PATH_EXTENSION = ".txt";
         private const int LARGEST_GRID = 25;
         /// <summary>
         /// Returns true if an unsolved cell has no candidates.
         /// </summary>
-        public static bool IsUnsolvable(SudokuGrid grid)
+        internal static bool IsUnsolvable(SudokuGrid grid)
         {
             foreach (SudokuGridStructure row in grid.GetRows())
                 if (row.HasUnsolvableCell())
@@ -31,7 +31,7 @@ namespace SudokuSolver.Core
         /// <summary>
         /// Returns true if the grid has duplicates in one of its structures.
         /// </summary>
-        public static bool IsInvalid(SudokuGrid grid)
+        internal static bool IsInvalid(SudokuGrid grid)
         {
             bool hasDuplicates;
 
@@ -47,7 +47,7 @@ namespace SudokuSolver.Core
         /// A method which receives an array of grid structures. and returns true if one of them has a
         /// duplicate value.
         /// </summary>
-        public static bool GridStructureArrayHasDuplicates(SudokuGridStructure[] arr)
+        internal static bool GridStructureArrayHasDuplicates(SudokuGridStructure[] arr)
         {
             foreach (SudokuGridStructure structure in arr)
                 if (structure.HasDuplicates())
