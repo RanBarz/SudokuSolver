@@ -14,7 +14,7 @@ namespace SudokuSolver.UI
         /// </summary>
         public static void GetInput(ref string input, ref bool graphicMode)
         {
-            SudokuUI.PrintBlue(UIConstants.MENU_MESSAGE);
+            SudokuUI.PrintBlue(UIConstants.MenuMessage);
             input = Console.ReadLine();
             input = HandleInput(input, ref graphicMode);
             Console.Write("\f\u001bc\x1b[3J");
@@ -22,7 +22,7 @@ namespace SudokuSolver.UI
                 return;
             FileUI.HandleFile(ref input);
             SudokuGridValidator.ValidateLegalStringOfGrid(input);
-            SudokuUI.PrintBlue(UIConstants.SHOW_INPUT_MESSAGE);
+            SudokuUI.PrintBlue(UIConstants.ShowInputMessage);
             if (graphicMode)
                 SudokuGridPrinter.PrintSudokuGrid(input);
             else
@@ -38,7 +38,7 @@ namespace SudokuSolver.UI
 
             SudokuGridValidator.ValidateInput(input);
             parameters = input.Split(new char[] { ' ', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            SudokuGridValidator.ValidateParameters(parameters, UIConstants.MAX_PARAMETERS, UIConstants.MIN_PARAMETERS);
+            SudokuGridValidator.ValidateParameters(parameters, UIConstants.MaxParameters, UIConstants.MinParameters);
             input = parameters[0];
             if (parameters.Length > 1)
             {

@@ -16,7 +16,7 @@ namespace SudokuSolver.UI
         public static void StartSudokuSolver()
         {
             DisableProgramTermination();
-            PrintBlue(UIConstants.START_MESSAGE);
+            PrintBlue(UIConstants.StartMessage);
             SolveSudokus();
         }
 
@@ -73,7 +73,7 @@ namespace SudokuSolver.UI
             Stopwatch stopwatch = new Stopwatch();
             SudokuGridSolver solver = new SudokuGridSolver(grid);
             string solution;
-            PrintGreen(UIConstants.RESULT_MESSAGE);
+            PrintGreen(UIConstants.ResultMessage);
             stopwatch.Start();
             solution = solver.Solve();
             stopwatch.Stop();

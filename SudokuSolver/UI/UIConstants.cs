@@ -8,8 +8,8 @@ namespace SudokuSolver.UI
 {
     internal class UIConstants
     {
-        public const int MAX_PARAMETERS = 2, MIN_PARAMETERS = 1;
-        public const string START_MESSAGE = "Welcome to the Omega Sudoku Solver.\n" +
+        public const int MaxParameters = 2, MinParameters = 1;
+        public const string StartMessage = "Welcome to the Omega Sudoku Solver.\n" +
             "Instructions:\n" +
             "-\tYou can either enter a string that represents a grid, or a file path.\n" +
             "-\tFile:\n" +
@@ -19,13 +19,14 @@ namespace SudokuSolver.UI
             "-\tString:\n" +
             "\t-\tEnter a string which has the same amount of characters as " +
             "the number of cells in your Sudoku grid.\n" +
+            "\t\tSizes: 1x1, 4x4, 9x9, 16x16 and 25x25.\n" +
             "\t-\tZero represents an empty cell.\n" +
             "\t-\tEach character represents a number that is its difference from Zero in ascii.\n" +
             "\t-\tThe largest grid acceptable is 25x25.\n"
-        , MENU_MESSAGE = "\nEnter a Sudoku grid (or 'exit', " +
+        , MenuMessage = "\nEnter a Sudoku grid (or 'exit', " +
             "you can add ' -s' for string representation):"
-        , RESULT_MESSAGE = "\nThe solution to this grid is: "
-        , SHOW_INPUT_MESSAGE = "The grid you entered looks as follows: ";
+        , ResultMessage = "\nThe solution to this grid is: "
+        , ShowInputMessage = "The grid you entered looks as follows: ";
 
     }
 }
