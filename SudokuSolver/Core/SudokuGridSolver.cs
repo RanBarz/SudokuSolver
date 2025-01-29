@@ -20,6 +20,8 @@ namespace SudokuSolver.Core
         {
             int gridSize = GetGridSize(grid);
             this.grid = new SudokuGrid(grid, gridSize);
+            if (SudokuGridValidator.IsInvalid(this.grid))
+                throw new InvalidSudokuGridException("This grid contains duplicates in a row / column / subgrid.");
         }
 
         private SudokuGridSolver(SudokuGrid grid)

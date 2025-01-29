@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType> <!-- Use 'Library' for a class library -->
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>

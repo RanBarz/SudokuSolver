@@ -39,9 +39,10 @@ namespace SudokuSolver.UI
                     if (!input.Equals("exit"))
                         ShowOutput(input, graphicMode);
                 }
-                catch (Exception ex) when (ex is IllegalStringOfSudokuGridException ||
-                            ex is ArgumentException ||
-                            ex is UnsolvableSudokuGridException)
+                catch (Exception ex) when (ex.GetType() ==  typeof(IllegalStringOfSudokuGridException) ||
+                            ex.GetType() == typeof(ArgumentException) ||
+                            ex.GetType() == typeof(UnsolvableSudokuGridException) ||
+                            ex.GetType() == typeof(InvalidSudokuGridException))
                 {
                     PrintRed(ex.Message);
                     if (ex is UnsolvableSudokuGridException)
