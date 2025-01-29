@@ -6,8 +6,8 @@ namespace SudokuSolver.Core
 {
     internal static class SudokuHeuristics
     {
-        private const int MAX_FOR_NAKED_COMBINATIONS = 9;
-        private const int NAKED_SIZE_FOR_LARGE_GRIDS = 2;
+        private const int MaxForNakedCombinations = 9;
+        private const int NakedSizeForLargeGrids = 2;
 
         /// <summary>
         /// Runs the naked heuristic on a SudokuGridStructure, fro pairs, triples and so on.
@@ -18,7 +18,7 @@ namespace SudokuSolver.Core
             List<HashSet<Cell>> allCombinations = new List<HashSet<Cell>>();
             bool progressed = false;
             int gridSize = structure.GetGridSize(), 
-                nakedSize = gridSize > MAX_FOR_NAKED_COMBINATIONS ? NAKED_SIZE_FOR_LARGE_GRIDS : gridSize;
+                nakedSize = gridSize > MaxForNakedCombinations ? NakedSizeForLargeGrids : gridSize;
 
             for (int combinationSize = 2; combinationSize < Math.Min(gridSize - 1, nakedSize); combinationSize++)
             {
