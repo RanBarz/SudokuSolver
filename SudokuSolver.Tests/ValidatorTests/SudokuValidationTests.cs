@@ -48,5 +48,20 @@ namespace SudokuSolver.Tests.ValidatorTests
                 SudokuGridValidator.ValidateLegalStringOfGrid(invalidLengthInput);
             });
         }
+
+        /// <summary>
+        /// This method tests if the solver raises Invalid for an Invalid grid.
+        /// </summary>
+        [Fact]
+        public void TestInvalidSudokuGrid()
+        {
+            string input = TestData.InvalidSudoku;
+
+            InvalidSudokuGridException exception = Assert.Throws<InvalidSudokuGridException>(() =>
+            {
+                var solver = new SudokuGridSolver(input);
+                solver.Solve();
+            });
+        }
     }
 }
