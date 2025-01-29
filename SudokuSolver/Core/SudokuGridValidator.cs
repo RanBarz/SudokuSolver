@@ -70,10 +70,15 @@ namespace SudokuSolver.Core
         public static int ValidateHasProperSize(string grid)
         {
             double rootOfLength = Math.Sqrt(grid.Length);
-            if (Math.Sqrt(rootOfLength) % 1 != 0 || rootOfLength > LARGEST_GRID)
+            if (rootOfLength > LARGEST_GRID)
                 throw new IllegalStringOfSudokuGridException(
                     $"The string reprsentation of the grid has {grid.Length} characters, " +
-                    $"which square root isn't a natural number..");
+                    $"which is larger than a 25x25 grid.");
+            if (Math.Sqrt(rootOfLength) % 1 != 0)
+                throw new IllegalStringOfSudokuGridException(
+                    $"The provided grid contains {grid.Length} characters,\n" +
+                    $"but a Sudoku grid must have a number of characters" +
+                    $" corresponding to grid sizes:\n 1×1, 4×4, 9×9, 16×16, or 25×25.");
             return (int) rootOfLength;
         }
 
