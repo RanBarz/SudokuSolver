@@ -1,4 +1,6 @@
-﻿using SudokuSolver.Core.Exceptions;
+﻿using SudokuSolver.Core.Entities;
+using SudokuSolver.Core.Exceptions;
+using SudokuSolver.Core.Helpers;
 using System;
 using System.Collections.Generic;
 
@@ -61,9 +63,9 @@ namespace SudokuSolver.Core
             bool progressed = true;
             while (!grid.IsSolved() && progressed)
             {
-                progressed = RemoveCandidatesSudokuGridStructureArray(rows);
-                progressed = RemoveCandidatesSudokuGridStructureArray(cols) || progressed;
-                progressed = RemoveCandidatesSudokuGridStructureArray(subgrids) || progressed;
+                progressed = RemoveCandidatesFromArray(rows);
+                progressed = RemoveCandidatesFromArray(cols) || progressed;
+                progressed = RemoveCandidatesFromArray(subgrids) || progressed;
                 if (SudokuGridValidator.IsUnsolvable(grid) || SudokuGridValidator.IsInvalid(grid))
                     throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
                 if (!progressed && !grid.IsSolved())
@@ -75,7 +77,7 @@ namespace SudokuSolver.Core
         /// Applies solving strategies to an array of grid structures (rows, columns, or subgrids)
         /// </summary>
         /// <returns>True if any progress was made in solving</returns>
-        internal static bool RemoveCandidatesSudokuGridStructureArray(SudokuGridStructure[] arr)
+        internal static bool RemoveCandidatesFromArray(SudokuGridStructure[] arr)
         {
             bool progressed = false;
             foreach (SudokuGridStructure structure in arr)
@@ -97,7 +99,7 @@ namespace SudokuSolver.Core
         {
             SudokuGridStructure structure = grid.GetMostOccupiedGridStructure();
             Cell cell = structure.GetCellWithLeastCandidates();
-            HashSet<int> candidates = new HashSet<int>(cell.GetCandidates());
+            var candidates = new HashSet<int>(cell.GetCandidates());
             RecursiveSolve(cell, candidates, structure);
         }
 

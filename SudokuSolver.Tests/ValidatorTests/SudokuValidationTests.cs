@@ -1,5 +1,6 @@
 ﻿using SudokuSolver.Core;
 using SudokuSolver.Core.Exceptions;
+using SudokuSolver.Core.Helpers;
 using Xunit;
 
 namespace SudokuSolver.Tests.ValidatorTests

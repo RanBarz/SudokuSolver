@@ -1,8 +1,9 @@
-﻿using System;
+﻿using SudokuSolver.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Helpers
 {
     internal static class SudokuHeuristics
     {
@@ -15,9 +16,9 @@ namespace SudokuSolver.Core
         public static bool NakedCombinations(SudokuGridStructure structure)
         {
             Cell[] cells = structure.GetCells();
-            List<HashSet<Cell>> allCombinations = new List<HashSet<Cell>>();
+            var allCombinations = new List<HashSet<Cell>>();
             bool progressed = false;
-            int gridSize = structure.GetGridSize(), 
+            int gridSize = structure.GetGridSize(),
                 nakedSize = gridSize > MaxForNakedCombinations ? NakedSizeForLargeGrids : gridSize;
 
             for (int combinationSize = 2; combinationSize < Math.Min(gridSize - 1, nakedSize); combinationSize++)
@@ -32,7 +33,7 @@ namespace SudokuSolver.Core
         /// <summary>
         /// This function receives all the combinations of cells, and removes candidates according to the heuristic.
         /// </summary>
-        private static void HandleNakedCombinations(Cell[] cells, List<HashSet<Cell>> cellsOfCombination, 
+        private static void HandleNakedCombinations(Cell[] cells, List<HashSet<Cell>> cellsOfCombination,
             ref bool progressed)
         {
             HashSet<int> allCandidates;
@@ -58,7 +59,7 @@ namespace SudokuSolver.Core
         /// </summary>
         private static HashSet<int> GetAllCandidates(HashSet<Cell> cells)
         {
-            HashSet<int> allCandidates = new HashSet<int>();
+            var allCandidates = new HashSet<int>();
             foreach (Cell cell in cells)
             {
                 allCandidates.UnionWith(cell.GetCandidates());
@@ -71,7 +72,7 @@ namespace SudokuSolver.Core
         /// </summary>
         private static List<HashSet<Cell>> GetAllCombinations(Cell[] cells, int combinationSize)
         {
-            List<HashSet<Cell>> allCombinations = new List<HashSet<Cell>>();
+            var allCombinations = new List<HashSet<Cell>>();
 
             if (combinationSize == 0)
             {
@@ -87,7 +88,7 @@ namespace SudokuSolver.Core
                         GetAllCombinations(cells.Skip(i + 1).ToArray(), combinationSize - 1);
                     foreach (HashSet<Cell> combination in leftCombinations)
                     {
-                        HashSet<Cell> outcome = new HashSet<Cell>() { cells[i] };
+                        var outcome = new HashSet<Cell>() { cells[i] };
                         outcome.UnionWith(combination);
                         allCombinations.Add(outcome);
                     }
@@ -106,9 +107,9 @@ namespace SudokuSolver.Core
 
             foreach (KeyValuePair<int, HashSet<Cell>> kvp in structure.GetCandidatesMap())
             {
-                if (kvp.Value.Count == 1 && !kvp.Value.First<Cell>().IsSolved())
+                if (kvp.Value.Count == 1 && !kvp.Value.First().IsSolved())
                 {
-                    Cell cell = kvp.Value.First<Cell>();
+                    Cell cell = kvp.Value.First();
                     cell.SetCandidates(new HashSet<int>() { kvp.Key });
                     progressed = true;
                 }
@@ -141,7 +142,7 @@ namespace SudokuSolver.Core
         /// </summary>
         public static bool RemoveCandidates(SudokuGridStructure structure)
         {
-            HashSet<Cell> removedFrom = new HashSet<Cell>();
+            var removedFrom = new HashSet<Cell>();
             structure.SetOccupied();
 
             foreach (Cell cell in structure.GetCells())

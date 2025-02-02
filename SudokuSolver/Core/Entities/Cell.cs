@@ -2,7 +2,7 @@
 using System.Linq;
 
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Entities
 {
     /// <summary>Represents a single cell in a Sudoku grid,
     /// managing its value and candidates.</summary>
@@ -49,7 +49,7 @@ namespace SudokuSolver.Core
         /// </summary>
         public void SetValue()
         {
-            value = candidatesSet.ElementAt<int>(0);
+            value = candidatesSet.ElementAt(0);
             candidatesSet.Clear();
         }
 
@@ -78,7 +78,7 @@ namespace SudokuSolver.Core
         /// <summary>
         /// Returns an array of all current candidate values
         /// </summary>1
-        public int[] GetCandidates() => candidatesSet.ToArray<int>();
+        public int[] GetCandidates() => candidatesSet.ToArray();
 
         /// <summary>
         /// Checks if a specific number is a candidate for this cell
@@ -91,7 +91,7 @@ namespace SudokuSolver.Core
         /// </summary>
         public override string ToString()
         {
-            string str = ((char) (value + '0')).ToString();
+            string str = ((char)(value + '0')).ToString();
             return str;
         }
 

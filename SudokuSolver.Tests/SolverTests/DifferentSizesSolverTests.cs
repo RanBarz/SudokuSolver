@@ -12,7 +12,7 @@ namespace SudokuSolver.Tests.SolverTests
         public void TestSizeOne()
         {
             string expected = TestData.OneByOneOutput;
-            SudokuGridSolver actual = new SudokuGridSolver(TestData.OneByOneInput);
+            var actual = new SudokuGridSolver(TestData.OneByOneInput);
             Assert.Equal(expected, actual.Solve());
         }
 
@@ -23,7 +23,7 @@ namespace SudokuSolver.Tests.SolverTests
         public void TestSizeFour()
         {
             string expected = TestData.FourByFourOutput;
-            SudokuGridSolver actual = new SudokuGridSolver(TestData.FourByFourInput);
+            var actual = new SudokuGridSolver(TestData.FourByFourInput);
             Assert.Equal(expected, actual.Solve());
         }
 
@@ -34,7 +34,7 @@ namespace SudokuSolver.Tests.SolverTests
         public void TestSizeSixteen()
         {
             string expected = TestData.SixteenBySixteenOutput;
-            SudokuGridSolver actual = new SudokuGridSolver(TestData.SixteenBySixteenInput);
+            var actual = new SudokuGridSolver(TestData.SixteenBySixteenInput);
             Assert.Equal(expected, actual.Solve());
         }
 
@@ -45,7 +45,7 @@ namespace SudokuSolver.Tests.SolverTests
         public void TestSizeTwentyFive()
         {
             string expected = TestData.TwentyFiveOutput;
-            SudokuGridSolver actual = new SudokuGridSolver(TestData.TwentyFiveInput);
+            var actual = new SudokuGridSolver(TestData.TwentyFiveInput);
             Assert.Equal(expected, actual.Solve());
         }
     }
