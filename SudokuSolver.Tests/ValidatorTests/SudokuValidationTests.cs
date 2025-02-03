@@ -64,5 +64,17 @@ namespace SudokuSolver.Tests.ValidatorTests
                 solver.Solve();
             });
         }
+
+        /// <summary>
+        /// This method test a file with wrong extension
+        /// </summary>
+        [Fact]
+        public void TestFileExtension()
+        {
+            IllegalFileOfSudokuGridException exception = Assert.Throws<IllegalFileOfSudokuGridException>(() =>
+            {
+                SudokuGridValidator.ValidateFile(TestData.FileExtension);
+            });       
+        }
     }
 }
