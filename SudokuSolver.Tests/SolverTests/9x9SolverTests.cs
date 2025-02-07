@@ -1,6 +1,5 @@
 ﻿using SudokuSolver.Core;
 using System.ComponentModel;
-using Xunit;
 
 namespace SudokuSolver.Tests.SolverTests
 {
@@ -14,7 +13,9 @@ namespace SudokuSolver.Tests.SolverTests
                 { TestData.HardInput, TestData.HardOutput, "Hard" },
                 { TestData.VeryHardInput, TestData.VeryHardOutput, "Very SHard" },
                 { TestData.ExpertInput, TestData.ExpertOutput, "Expert" },
-                { TestData.FullGridInput, TestData.FullGridInput, "Full Grid" }
+                { TestData.FullGridInput, TestData.FullGridInput, "Full Grid" },
+                { TestData.EmptyGridInput, TestData.EmptyGridOutput, "Emtpy Grid" },
+                { TestData.AlmostFullGridInput, TestData.AlmostFullGridOutput, "Almost Full" }
                 };
 
         [Theory]
