@@ -1,5 +1,6 @@
 ﻿using SudokuSolver.Core;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace SudokuSolver.Tests.SolverTests
 {
@@ -24,9 +25,15 @@ namespace SudokuSolver.Tests.SolverTests
         public void TestAllDifficulties(
             string input, string expectedOutput, string difficulty)
         {
+            var stopwatch = Stopwatch.StartNew();
+
             var solver = new SudokuGridSolver(input);
 
             string actualOutput = solver.Solve();
+
+            stopwatch.Stop();
+
+            Assert.True(stopwatch.ElapsedMilliseconds <= TestData.MaxTimeInMs);
 
             Assert.Equal(expectedOutput, actualOutput);
         }

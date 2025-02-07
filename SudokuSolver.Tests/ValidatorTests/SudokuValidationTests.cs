@@ -1,7 +1,6 @@
 ﻿using SudokuSolver.Core;
 using SudokuSolver.Core.Exceptions;
 using SudokuSolver.Core.Helpers;
-using Xunit;
 
 namespace SudokuSolver.Tests.ValidatorTests
 {
@@ -75,6 +74,20 @@ namespace SudokuSolver.Tests.ValidatorTests
             {
                 SudokuGridValidator.ValidateFile(TestData.FileExtension);
             });       
+        }
+
+        /// <summary>
+        /// Tests that a grid with too long length throws the correct exception.
+        /// </summary>
+        [Fact]
+        public void TestTooLongGrid()
+        {
+            string invalidLengthInput = TestData.InputWithTooLongLength;
+
+            IllegalStringOfSudokuGridException exception = Assert.Throws<IllegalStringOfSudokuGridException>(() =>
+            {
+                SudokuGridValidator.ValidateLegalStringOfGrid(invalidLengthInput);
+            });
         }
     }
 }

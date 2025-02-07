@@ -1,5 +1,6 @@
 ﻿using SudokuSolver.Core;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace SudokuSolver.Tests.SolverTests
 {
@@ -20,9 +21,16 @@ namespace SudokuSolver.Tests.SolverTests
         public void TestDifferentSizes(
             string input, string expectedOutput, string puzzleSize)
         {
+            var stopwatch = Stopwatch.StartNew();
+
             var solver = new SudokuGridSolver(input);
 
             string actualOutput = solver.Solve();
+
+            stopwatch.Stop();
+
+            if (!puzzleSize.Equals(TestData.NoTimeLimit))
+                Assert.True(stopwatch.ElapsedMilliseconds <= TestData.MaxTimeInMs);
 
             Assert.Equal(expectedOutput, actualOutput);
         }
