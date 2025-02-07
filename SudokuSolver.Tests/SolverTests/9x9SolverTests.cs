@@ -13,8 +13,9 @@ namespace SudokuSolver.Tests.SolverTests
                 { TestData.MediumInput, TestData.MediumOutput, "Medium" },
                 { TestData.HardInput, TestData.HardOutput, "Hard" },
                 { TestData.VeryHardInput, TestData.VeryHardOutput, "Very SHard" },
-                { TestData.ExpertInput, TestData.ExpertOutput, "Expert" }
-            };
+                { TestData.ExpertInput, TestData.ExpertOutput, "Expert" },
+                { TestData.FullGridInput, TestData.FullGridInput, "Full Grid" }
+                };
 
         [Theory]
         [MemberData(nameof(ValidPuzzles))]
