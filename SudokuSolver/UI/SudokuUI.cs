@@ -33,25 +33,33 @@ namespace SudokuSolver.UI
 
             while (input is null || !input.Equals("exit"))
             {
-                try
-                {
-                    InputHandler.GetInput(ref input, ref graphicMode);
-                    stopwatch.Reset();
-                    stopwatch.Start();
-                    if (!input.Equals("exit"))
-                        OutputHandler.ShowOutput(input, graphicMode);
-                }
-                catch (Exception ex) when (ex.GetType() ==  typeof(IllegalStringOfSudokuGridException) ||
-                            ex.GetType() == typeof(ArgumentException) ||
-                            ex.GetType() == typeof(UnsolvableSudokuGridException) ||
-                            ex.GetType() == typeof(InvalidSudokuGridException))
-                {
-                    OutputHandler.PrintRed(ex.Message);
-                    if (ex is UnsolvableSudokuGridException)
-                    {
-                        stopwatch.Stop();
-                        OutputHandler.PrintGreen($"The algorithm took {stopwatch.ElapsedMilliseconds} ms.");
-                    }
+                TrySudokuSolver(stopwatch, ref input, ref graphicMode);
+            }
+        }
+
+        /// <summary>
+        /// Get input for the Sudoku, try solving and show output.
+        /// </summary>
+        private static void TrySudokuSolver(Stopwatch stopwatch, ref string input, ref bool graphicMode)
+        {
+            try
+            {
+                InputHandler.GetInput(ref input, ref graphicMode);
+                stopwatch.Reset();
+                stopwatch.Start();
+                if (!input.Equals("exit"))
+                    OutputHandler.ShowOutput(input, graphicMode);
+            }
+            catch (Exception ex) when (ex.GetType() == typeof(IllegalStringOfSudokuGridException) ||
+                        ex.GetType() == typeof(ArgumentException) ||
+                        ex.GetType() == typeof(UnsolvableSudokuGridException) ||
+                        ex.GetType() == typeof(InvalidSudokuGridException))
+            {
+                OutputHandler.PrintRed(ex.Message);
+                if (ex is UnsolvableSudokuGridException)
+                {   
+                    stopwatch.Stop();
+                    OutputHandler.PrintGreen($"The algorithm took {stopwatch.ElapsedMilliseconds} ms.");
                 }
             }
         }

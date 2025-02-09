@@ -1,9 +1,6 @@
-<<<<<<< HEAD:SudokuSolver/UI/Input/InputHandler.cs
 ﻿using SudokuSolver.Core;
 using SudokuSolver.UI.Output;
-=======
 ﻿using SudokuSolver.Core.Helpers;
->>>>>>> dev:SudokuSolver/UI/InputHandler.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;
