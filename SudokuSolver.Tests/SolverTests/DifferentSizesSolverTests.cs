@@ -1,52 +1,38 @@
 ﻿using SudokuSolver.Core;
-using Xunit;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace SudokuSolver.Tests.SolverTests
 {
     public class DifferentSizesSolverTests
     {
-        /// <summary>
-        /// Tests the Sudoku solver with an 1x1 puzzle input.
-        /// </summary>
-        [Fact]
-        public void TestSizeOne()
-        {
-            string expected = TestData.OneByOneOutput;
-            SudokuGridSolver actual = new SudokuGridSolver(TestData.OneByOneInput);
-            Assert.Equal(expected, actual.Solve());
-        }
+        public static TheoryData<string, string, string> ValidPuzzles =>
+            new TheoryData<string, string, string>
+            {
+                { TestData.OneByOneInput, TestData.OneByOneOutput, "1x1" },
+                { TestData.FourByFourInput, TestData.FourByFourOutput, "4x4" },
+                { TestData.SixteenBySixteenInput, TestData.SixteenBySixteenOutput, "16x16" },
+                { TestData.TwentyFiveInput, TestData.TwentyFiveOutput, "25x25" }
+            };
 
-        /// <summary>
-        /// Tests the Sudoku solver with a 4x4 difficulty puzzle input.
-        /// </summary>
-        [Fact]
-        public void TestSizeFour()
+        [Theory]
+        [MemberData(nameof(ValidPuzzles))]
+        [DisplayName("Solve {2} Puzzle")]
+        public void TestDifferentSizes(
+            string input, string expectedOutput, string puzzleSize)
         {
-            string expected = TestData.FourByFourOutput;
-            SudokuGridSolver actual = new SudokuGridSolver(TestData.FourByFourInput);
-            Assert.Equal(expected, actual.Solve());
-        }
+            var stopwatch = Stopwatch.StartNew();
 
-        /// <summary>
-        /// Tests the Sudoku solver with a 16x16 difficulty puzzle input.
-        /// </summary>
-        [Fact]
-        public void TestSizeSixteen()
-        {
-            string expected = TestData.SixteenBySixteenOutput;
-            SudokuGridSolver actual = new SudokuGridSolver(TestData.SixteenBySixteenInput);
-            Assert.Equal(expected, actual.Solve());
-        }
+            var solver = new SudokuGridSolver(input);
 
-        /// <summary>
-        /// Tests the Sudoku solver with a 25x25 puzzle input.
-        /// </summary>
-        [Fact]
-        public void TestSizeTwentyFive()
-        {
-            string expected = TestData.TwentyFiveOutput;
-            SudokuGridSolver actual = new SudokuGridSolver(TestData.TwentyFiveInput);
-            Assert.Equal(expected, actual.Solve());
+            string actualOutput = solver.Solve();
+
+            stopwatch.Stop();
+
+            if (!puzzleSize.Equals(TestData.NoTimeLimit))
+                Assert.True(stopwatch.ElapsedMilliseconds <= TestData.MaxTimeInMs);
+
+            Assert.Equal(expectedOutput, actualOutput);
         }
     }
 }

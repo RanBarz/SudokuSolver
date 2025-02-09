@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SudokuSolver.Core.Entities;
+using SudokuSolver.Core.Helpers;
+using System;
 
 namespace SudokuSolver.Core
 {
@@ -133,7 +135,7 @@ namespace SudokuSolver.Core
         /// <summary>
         /// Calculates the index of a cell within its subgrid
         /// </summary>
-        private int CalculateCellIndexInSubgrid(int innerRow, int innerCol, int subgridSize)
+        private static int CalculateCellIndexInSubgrid(int innerRow, int innerCol, int subgridSize)
         {
             return innerCol + (innerRow * subgridSize);
         }
@@ -152,7 +154,7 @@ namespace SudokuSolver.Core
         /// <summary>
         /// Calculates the index of a subgrid in the array of subgrids
         /// </summary>
-        private int CalculateSubgridIndex(int subgridRow, int subgridCol, int subgridSize)
+        private static int CalculateSubgridIndex(int subgridRow, int subgridCol, int subgridSize)
         {
             return subgridCol + (subgridRow * subgridSize);
         }
@@ -162,7 +164,7 @@ namespace SudokuSolver.Core
         /// </summary>
         public SudokuGrid Copy()
         {
-            SudokuGrid copy = new SudokuGrid(ToString(), gridSize);
+            var copy = new SudokuGrid(ToString(), gridSize);
             copy.SetAllOccupied();
             return copy;
         }

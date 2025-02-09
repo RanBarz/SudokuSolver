@@ -1,4 +1,4 @@
-﻿using SudokuSolver.Core;
+﻿using SudokuSolver.Core.Helpers;
 using System;
 using System.IO;
 

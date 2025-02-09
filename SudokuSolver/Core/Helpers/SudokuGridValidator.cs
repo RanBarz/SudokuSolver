@@ -1,19 +1,14 @@
 ﻿using SudokuSolver.Core.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SudokuSolver.Core
+namespace SudokuSolver.Core.Helpers
 {
     /// <summary>
     /// The class offering validation to both string representation of sudoku grids,
     /// and objects of them.
     /// </summary>
-    public class SudokuGridValidator
+    public static class SudokuGridValidator
     {
         private const string FILE_PATH_EXTENSION = ".txt";
         private const int LARGEST_GRID = 25;
@@ -36,9 +31,9 @@ namespace SudokuSolver.Core
             bool hasDuplicates;
 
             hasDuplicates = GridStructureArrayHasDuplicates(grid.GetRows());
-            hasDuplicates = hasDuplicates || 
+            hasDuplicates = hasDuplicates ||
                 GridStructureArrayHasDuplicates(grid.GetCols());
-            hasDuplicates = hasDuplicates || 
+            hasDuplicates = hasDuplicates ||
                 GridStructureArrayHasDuplicates(grid.GetSubgrids());
             return hasDuplicates;
         }
@@ -70,11 +65,16 @@ namespace SudokuSolver.Core
         public static int ValidateHasProperSize(string grid)
         {
             double rootOfLength = Math.Sqrt(grid.Length);
-            if (Math.Sqrt(rootOfLength) % 1 != 0 || rootOfLength > LARGEST_GRID)
+            if (rootOfLength > LARGEST_GRID)
                 throw new IllegalStringOfSudokuGridException(
                     $"The string reprsentation of the grid has {grid.Length} characters, " +
-                    $"which square root isn't a natural number..");
-            return (int) rootOfLength;
+                    $"which is larger than a 25x25 grid.");
+            if (Math.Sqrt(rootOfLength) % 1 != 0)
+                throw new IllegalStringOfSudokuGridException(
+                    $"The provided grid contains {grid.Length} characters,\n" +
+                    $"but a Sudoku grid must have a number of characters" +
+                    $" corresponding to grid sizes:\n 1×1, 4×4, 9×9, 16×16, or 25×25.");
+            return (int)rootOfLength;
         }
 
         /// <summary>
@@ -115,10 +115,10 @@ namespace SudokuSolver.Core
                 throw new ArgumentException("Not enough arguments provided. At least one is required.");
         }
 
-        public static bool TooManyParams(string[] parameters, int maxParameters) 
+        public static bool TooManyParams(string[] parameters, int maxParameters)
             => parameters.Length > maxParameters;
-    
-        public static bool EnoughParams(string[] parameters, int minParameters) 
+
+        public static bool EnoughParams(string[] parameters, int minParameters)
             => parameters.Length >= minParameters;
 
         /// <summary>
