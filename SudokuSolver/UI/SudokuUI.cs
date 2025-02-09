@@ -1,5 +1,7 @@
 ﻿using SudokuSolver.Core;
 using SudokuSolver.Core.Exceptions;
+using SudokuSolver.UI.Input;
+using SudokuSolver.UI.Output;
 using System;
 using System.Diagnostics;
 
@@ -16,7 +18,7 @@ namespace SudokuSolver.UI
         public static void StartSudokuSolver()
         {
             DisableProgramTermination();
-            PrintBlue(UIConstants.StartMessage);
+            OutputHandler.PrintBlue(UIConstants.StartMessage);
             SolveSudokus();
         }
 
@@ -37,18 +39,18 @@ namespace SudokuSolver.UI
                     stopwatch.Reset();
                     stopwatch.Start();
                     if (!input.Equals("exit"))
-                        ShowOutput(input, graphicMode);
+                        OutputHandler.ShowOutput(input, graphicMode);
                 }
                 catch (Exception ex) when (ex.GetType() ==  typeof(IllegalStringOfSudokuGridException) ||
                             ex.GetType() == typeof(ArgumentException) ||
                             ex.GetType() == typeof(UnsolvableSudokuGridException) ||
                             ex.GetType() == typeof(InvalidSudokuGridException))
                 {
-                    PrintRed(ex.Message);
+                    OutputHandler.PrintRed(ex.Message);
                     if (ex is UnsolvableSudokuGridException)
                     {
                         stopwatch.Stop();
-                        PrintGreen($"The algorithm took {stopwatch.ElapsedMilliseconds} ms.");
+                        OutputHandler.PrintGreen($"The algorithm took {stopwatch.ElapsedMilliseconds} ms.");
                     }
                 }
             }
@@ -63,56 +65,6 @@ namespace SudokuSolver.UI
             {
                 e.Cancel = true;
             };
-        }
-
-        /// <summary>
-        /// A method which shows the solution of a sudoku grid.
-        /// </summary>
-        private static void ShowOutput(string grid, bool graphicMode)
-        {
-            Stopwatch stopwatch = new Stopwatch();
-            SudokuGridSolver solver = new SudokuGridSolver(grid);
-            string solution;
-            PrintGreen(UIConstants.ResultMessage);
-            stopwatch.Start();
-            solution = solver.Solve();
-            stopwatch.Stop();
-            if (graphicMode)
-                SudokuGridPrinter.PrintSudokuGrid(solution);
-            else
-                PrintGreen(solution);
-            stopwatch.Stop();
-            PrintGreen($"The algorithm took {stopwatch.ElapsedMilliseconds} ms.");
-        }
-
-        /// <summary>
-        /// A method which prints a string in red.
-        /// </summary>
-        /// <param name="message"></param>
-        public static void PrintRed(string message)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine(message);
-        }
-
-        /// <summary>
-        /// A method which prints a string in green.
-        /// </summary>
-        /// <param name="message"></param>
-        public static void PrintGreen(string message)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine(message);
-        }
-
-        /// <summary>
-        /// A method which prints a string in blue.
-        /// </summary>
-        /// <param name="message"></param>
-        public static void PrintBlue(string message)
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(message);
         }
     }
 }

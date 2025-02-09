@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SudokuSolver.UI
+namespace SudokuSolver.UI.Output
 {
     internal static class SudokuGridPrinter
     {

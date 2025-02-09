@@ -3,7 +3,7 @@ using System;
 using System.IO;
 
 
-namespace SudokuSolver.UI
+namespace SudokuSolver.UI.Input
 {
     internal class FileUI
     {

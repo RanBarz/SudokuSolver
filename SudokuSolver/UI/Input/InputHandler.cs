@@ -1,11 +1,12 @@
 ﻿using SudokuSolver.Core;
+using SudokuSolver.UI.Output;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SudokuSolver.UI
+namespace SudokuSolver.UI.Input
 {
     internal static class InputHandler
     {
@@ -14,7 +15,7 @@ namespace SudokuSolver.UI
         /// </summary>
         public static void GetInput(ref string input, ref bool graphicMode)
         {
-            SudokuUI.PrintBlue(UIConstants.MenuMessage);
+            OutputHandler.PrintBlue(UIConstants.MenuMessage);
             input = Console.ReadLine();
             input = HandleInput(input, ref graphicMode);
             Console.Write("\f\u001bc\x1b[3J");
@@ -22,11 +23,11 @@ namespace SudokuSolver.UI
                 return;
             FileUI.HandleFile(ref input);
             SudokuGridValidator.ValidateLegalStringOfGrid(input);
-            SudokuUI.PrintBlue(UIConstants.ShowInputMessage);
+            OutputHandler.PrintBlue(UIConstants.ShowInputMessage);
             if (graphicMode)
                 SudokuGridPrinter.PrintSudokuGrid(input);
             else
-                SudokuUI.PrintBlue(input);
+                OutputHandler.PrintBlue(input);
         }
 
         /// <summary>
