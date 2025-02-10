@@ -8,7 +8,8 @@ namespace SudokuSolver.UI
 {
     internal class UIConstants
     {
-        public const int MaxParameters = 2, MinParameters = 1;
+        public const int MaxParameters = 2, MinParameters = 1, 
+            SudokuGridIndex = 0, LargestGrid = 25, SecondParamIndex = 1;
         public const string StartMessage = "Welcome to the Omega Sudoku Solver.\n" +
             "Instructions:\n" +
             "-\tYou can either enter a string that represents a grid, or a file path.\n" +
@@ -26,7 +27,9 @@ namespace SudokuSolver.UI
         , MenuMessage = "\nEnter a Sudoku grid (or 'exit', " +
             "you can add ' -s' for string representation):"
         , ResultMessage = "\nThe solution to this grid is: "
-        , ShowInputMessage = "The grid you entered looks as follows: ";
+        , ShowInputMessage = "The grid you entered looks as follows: "
+        , FILE_PATH_EXTENSION = ".txt"
+        , AcceptableSecondParam = "-s";
 
     }
 }

@@ -1,0 +1,104 @@
+﻿using SudokuSolver.Core.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SudokuSolver.UI
+{
+    internal class SudokuStringValidator
+    {
+        /// <summary>
+        /// A method which throws an exception if a string representation of a grid isn't legal.
+        /// </summary>
+        public static void ValidateLegalStringOfGrid(string grid)
+        {
+            int gridSize = ValidateHasProperSize(grid);
+            ValidateHasProperChars(grid, gridSize);
+        }
+        /// <summary>
+        /// A method which throws an exception if a string representation of a grid isn't of legal size.
+        /// </summary>
+        public static int ValidateHasProperSize(string grid)
+        {
+            double rootOfLength = Math.Sqrt(grid.Length);
+            if (rootOfLength > UIConstants.LargestGrid)
+                throw new IllegalStringOfSudokuGridException(
+                    $"The string reprsentation of the grid has {grid.Length} characters, " +
+                    $"which is larger than a 25x25 grid.");
+            if (Math.Sqrt(rootOfLength) % 1 != 0)
+                throw new IllegalStringOfSudokuGridException(
+                    $"The provided grid contains {grid.Length} characters,\n" +
+                    $"but a Sudoku grid must have a number of characters" +
+                    $" corresponding to grid sizes:\n 1×1, 4×4, 9×9, 16×16, or 25×25.");
+            return (int)rootOfLength;
+        }
+
+        /// <summary>
+        /// A method which throws an exception if a string representation has illegal chars.
+        /// </summary>
+        public static void ValidateHasProperChars(string grid, int gridSize)
+        {
+            int value;
+
+            foreach (char c in grid)
+            {
+                value = c - '0';
+                if (value < 0 || value > gridSize)
+                    throw new IllegalStringOfSudokuGridException(
+                        $"The character {c} isn't legal in a Sudoku grid.");
+            }
+        }
+
+        public static bool ValidateSecondParam(string[] parameters)
+        {
+            if (parameters.Length <= UIConstants.SecondParamIndex)
+                return false;
+            if (!parameters[UIConstants.SecondParamIndex].Equals(UIConstants.AcceptableSecondParam))
+                throw new ArgumentException("The only acceptable second param is -s.");
+            return true;
+        }
+
+        /// <summary>
+        /// A method which throws an exception if the input is null
+        /// </summary>
+        public static void ValidateInput(string input)
+        {
+            if (input == null)
+                throw new ArgumentException("The input must be a Sudoku grid, " +
+                    "following the instructions.");
+        }
+
+        /// <summary>
+        /// A method which throws an exception if the number of parameters is below the min, 
+        /// or above the max.
+        /// </summary>
+        public static void ValidateParameters(string[] parameters, int maxParameters, int minParameters)
+        {
+            if (TooManyParams(parameters, maxParameters))
+                throw new ArgumentException("Too many arguments provided. Only up to 2 are allowed.");
+            if (!EnoughParams(parameters, minParameters))
+                throw new ArgumentException("Not enough arguments provided. At least one is required.");
+        }
+
+        public static bool TooManyParams(string[] parameters, int maxParameters)
+            => parameters.Length > maxParameters;
+
+        public static bool EnoughParams(string[] parameters, int minParameters)
+            => parameters.Length >= minParameters;
+
+        /// <summary>
+        /// A method which validates that a file is of the right type for Sudoku.
+        /// </summary>
+        /// <exception cref="IllegalFileOfSudokuGridException"></exception>
+        public static void ValidateFile(string filePath)
+        {
+            string extension = Path.GetExtension(filePath).ToLower();
+            if (!extension.Equals(UIConstants.FILE_PATH_EXTENSION))
+                throw new IllegalFileOfSudokuGridException("The file containing" +
+                    " the grid must have '.txt' extension");
+        }
+    }
+}

@@ -14,7 +14,7 @@ namespace SudokuSolver.UI.Input
         {
             if (!IsFile(input))
                 return;
-            SudokuGridValidator.ValidateFile(input);
+            SudokuStringValidator.ValidateFile(input);
             input = File.ReadAllText(input);
         }
 

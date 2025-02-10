@@ -23,7 +23,7 @@ namespace SudokuSolver.UI.Input
             if (input.Equals("exit"))
                 return;
             FileUI.HandleFile(ref input);
-            SudokuGridValidator.ValidateLegalStringOfGrid(input);
+            SudokuStringValidator.ValidateLegalStringOfGrid(input);
             OutputHandler.PrintBlue(UIConstants.ShowInputMessage);
             if (graphicMode)
                 SudokuGridPrinter.PrintSudokuGrid(input);
@@ -38,19 +38,11 @@ namespace SudokuSolver.UI.Input
         {
             string[] parameters;
 
-            SudokuGridValidator.ValidateInput(input);
+            SudokuStringValidator.ValidateInput(input);
             parameters = input.Split(new char[] { ' ', '\n', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            SudokuGridValidator.ValidateParameters(parameters, UIConstants.MaxParameters, UIConstants.MinParameters);
-            input = parameters[0];
-            if (parameters.Length > 1)
-            {
-                if (parameters[1] == "-s")
-                    graphicMode = false;
-                else
-                    throw new ArgumentException("The only acceptable second param is -s.");
-            }
-            else
-                graphicMode = true;
+            SudokuStringValidator.ValidateParameters(parameters, UIConstants.MaxParameters, UIConstants.MinParameters);
+            input = parameters[UIConstants.SudokuGridIndex];
+            graphicMode = !SudokuStringValidator.ValidateSecondParam(parameters);
             return input;
         }
     }
