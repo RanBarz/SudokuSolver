@@ -1,14 +1,10 @@
 ﻿using SudokuSolver.Core.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SudokuSolver.UI
 {
-    internal class SudokuStringValidator
+    public class SudokuStringValidator
     {
         /// <summary>
         /// A method which throws an exception if a string representation of a grid isn't legal.
@@ -66,8 +62,8 @@ namespace SudokuSolver.UI
         /// </summary>
         public static void ValidateInput(string input)
         {
-            if (input == null)
-                throw new ArgumentException("The input must be a Sudoku grid, " +
+            if (input.Equals(""))
+                throw new ArgumentException("The input must be a Sudoku grid or file path, " +
                     "following the instructions.");
         }
 

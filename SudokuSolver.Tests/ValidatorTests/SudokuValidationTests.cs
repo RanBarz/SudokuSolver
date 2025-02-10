@@ -1,6 +1,7 @@
 ﻿using SudokuSolver.Core;
 using SudokuSolver.Core.Exceptions;
 using SudokuSolver.Core.Helpers;
+using SudokuSolver.UI;
 
 namespace SudokuSolver.Tests.ValidatorTests
 {
@@ -31,7 +32,7 @@ namespace SudokuSolver.Tests.ValidatorTests
 
             IllegalStringOfSudokuGridException exception = Assert.Throws<IllegalStringOfSudokuGridException>(() =>
             {
-                SudokuGridValidator.ValidateLegalStringOfGrid(invalidInput);
+                SudokuStringValidator.ValidateLegalStringOfGrid(invalidInput);
             });
         }
 
@@ -45,7 +46,7 @@ namespace SudokuSolver.Tests.ValidatorTests
 
             IllegalStringOfSudokuGridException exception = Assert.Throws<IllegalStringOfSudokuGridException>(() =>
             {
-                SudokuGridValidator.ValidateLegalStringOfGrid(invalidLengthInput);
+                SudokuStringValidator.ValidateLegalStringOfGrid(invalidLengthInput);
             });
         }
 
@@ -72,7 +73,7 @@ namespace SudokuSolver.Tests.ValidatorTests
         {
             IllegalFileOfSudokuGridException exception = Assert.Throws<IllegalFileOfSudokuGridException>(() =>
             {
-                SudokuGridValidator.ValidateFile(TestData.FileExtension);
+                SudokuStringValidator.ValidateFile(TestData.FileExtension);
             });       
         }
 
@@ -86,13 +87,19 @@ namespace SudokuSolver.Tests.ValidatorTests
 
             IllegalStringOfSudokuGridException exception = Assert.Throws<IllegalStringOfSudokuGridException>(() =>
             {
-                SudokuGridValidator.ValidateLegalStringOfGrid(invalidLengthInput);
+                SudokuStringValidator.ValidateLegalStringOfGrid(invalidLengthInput);
             });
         }
 
         [Fact]
         public void TestEmptyInput()
         {
+            string input = TestData.EmptyInput;
+            bool unnecessary;
+            ArgumentException exception = Assert.Throws<ArgumentException>(() => 
+            {
+                SudokuStringValidator.ValidateInput(input);
+            });
             
         }
     }
