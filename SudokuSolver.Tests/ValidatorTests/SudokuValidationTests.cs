@@ -89,5 +89,11 @@ namespace SudokuSolver.Tests.ValidatorTests
                 SudokuGridValidator.ValidateLegalStringOfGrid(invalidLengthInput);
             });
         }
+
+        [Fact]
+        public void TestEmptyInput()
+        {
+            
+        }
     }
 }

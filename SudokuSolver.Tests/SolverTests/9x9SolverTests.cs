@@ -17,7 +17,7 @@ namespace SudokuSolver.Tests.SolverTests
                 { TestData.FullGridInput, TestData.FullGridInput, "Full Grid" },
                 { TestData.EmptyGridInput, TestData.EmptyGridOutput, "Emtpy Grid" },
                 { TestData.AlmostFullGridInput, TestData.AlmostFullGridOutput, "Almost Full" }
-                };
+            };
 
         [Theory]
         [MemberData(nameof(ValidPuzzles))]
@@ -37,6 +37,5 @@ namespace SudokuSolver.Tests.SolverTests
 
             Assert.Equal(expectedOutput, actualOutput);
         }
-
     }
 }
