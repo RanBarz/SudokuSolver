@@ -19,6 +19,9 @@ namespace SudokuSolver.Tests.SolverTests
                 { TestData.AlmostFullGridInput, TestData.AlmostFullGridOutput, "Almost Full" }
             };
 
+        /// <summary>
+        /// A test for each difficulty of a 9x9 grid.
+        /// </summary>
         [Theory]
         [MemberData(nameof(ValidPuzzles))]
         [DisplayName("Solve {2} Puzzle")]

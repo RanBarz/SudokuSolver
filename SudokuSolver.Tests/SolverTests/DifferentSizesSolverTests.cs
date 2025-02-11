@@ -15,6 +15,9 @@ namespace SudokuSolver.Tests.SolverTests
                 { TestData.TwentyFiveInput, TestData.TwentyFiveOutput, "25x25" }
             };
 
+        /// <summary>
+        /// A test for an empty grid of each size.
+        /// </summary>
         [Theory]
         [MemberData(nameof(ValidPuzzles))]
         [DisplayName("Solve {2} Puzzle")]

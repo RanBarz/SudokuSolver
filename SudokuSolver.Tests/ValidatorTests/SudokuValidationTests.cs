@@ -23,6 +23,21 @@ namespace SudokuSolver.Tests.ValidatorTests
         }
 
         /// <summary>
+        /// A test for a 16x16 unsolvable puzzle.
+        /// </summary>
+        [Fact]
+        public void TestUnsolvable16x16Puzzle()
+        {
+            string unsolvableInput = TestData.UnsolvableInput16x16;
+
+            UnsolvableSudokuGridException exception = Assert.Throws<UnsolvableSudokuGridException>(() =>
+            {
+                var solver = new SudokuGridSolver(unsolvableInput);
+                solver.Solve();
+            });
+        }
+
+        /// <summary>
         /// Tests that a grid with non-numeric characters throws the correct exception.
         /// </summary>
         [Fact]
@@ -91,11 +106,14 @@ namespace SudokuSolver.Tests.ValidatorTests
             });
         }
 
+        /// <summary>
+        /// A test for empty input throwing an exception.
+        /// </summary>
         [Fact]
         public void TestEmptyInput()
         {
             string input = TestData.EmptyInput;
-            bool unnecessary;
+
             ArgumentException exception = Assert.Throws<ArgumentException>(() => 
             {
                 SudokuStringValidator.ValidateInput(input);
