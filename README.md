@@ -27,7 +27,7 @@ A fast and efficient Sudoku solver that minimizes backtracking by applying advan
 1. Clone the repository
    ```bash
    git clone https://github.com/RanBarz/SudokuSolver
-2. Open the '.sln' file
+2. Open the `.sln` file
 3. Run the SudokuSolver project
 
 ## Example  
