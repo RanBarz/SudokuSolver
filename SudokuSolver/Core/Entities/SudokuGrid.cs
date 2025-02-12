@@ -199,6 +199,10 @@ namespace SudokuSolver.Core
             return grid;
         }
 
+        /// <summary>
+        /// A method which returns the cell with least optional candidates.
+        /// </summary>
+        /// <returns></returns>
         public Cell GetCellWithLeastCandidates()
         {
             int min = gridSize + 1;
@@ -215,45 +219,6 @@ namespace SudokuSolver.Core
             }
 
             return minCell;
-        }
-
-        /// <summary>
-        /// A method which returns the most occupied grid structure in a grid, which isn't fully solved.
-        /// </summary>
-        public SudokuGridStructure GetMostOccupiedGridStructure()
-        {
-            SudokuGridStructure maxRow, maxCol, maxSub;
-            maxRow = GetMostOccupiedInStructureArray(rows);
-            maxCol = GetMostOccupiedInStructureArray(cols);
-            maxSub = GetMostOccupiedInStructureArray(subgrids);
-
-            maxRow = maxRow.GetOccupiedCount() > maxCol.GetOccupiedCount() ?
-                maxRow : maxCol;
-            maxRow = maxRow.GetOccupiedCount() > maxSub.GetOccupiedCount() ?
-                maxRow : maxSub;
-            return maxRow;
-        }
-
-        /// <summary>
-        ///  A method which receives an array of grid structures, and returns the most occupied of them.
-        ///  *Which isn't fully solved.
-        /// </summary>
-        public SudokuGridStructure GetMostOccupiedInStructureArray(SudokuGridStructure[] arr)
-        {
-            int maxOccupied = -1;
-            SudokuGridStructure maxStructure = null;
-
-            foreach (SudokuGridStructure structure in arr)
-            {
-                if (structure.GetOccupiedCount() > maxOccupied &&
-                    structure.GetOccupiedCount() != gridSize)
-                {
-                    maxOccupied = structure.GetOccupiedCount();
-                    maxStructure = structure;
-                }
-            }
-
-            return maxStructure;
-        }
-}
+        }        
+    }
 }

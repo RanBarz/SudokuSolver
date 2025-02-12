@@ -102,7 +102,6 @@ namespace SudokuSolver.Core
                 {
                     progressed = SudokuHeuristics.NakedSingle(structure) || progressed;
                     progressed = SudokuHeuristics.HiddenSingle(structure) || progressed;
-                    progressed = SudokuHeuristics.HiddenPair(structure) || progressed;
                 }
             }
             return progressed;
