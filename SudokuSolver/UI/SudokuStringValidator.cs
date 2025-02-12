@@ -62,7 +62,7 @@ namespace SudokuSolver.UI
         /// </summary>
         public static void ValidateInput(string input)
         {
-            if (input.Equals(""))
+            if (input == null || input.Equals(""))
                 throw new ArgumentException("The input must be a Sudoku grid or file path, " +
                     "following the instructions.");
         }
