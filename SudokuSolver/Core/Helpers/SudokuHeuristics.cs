@@ -1,4 +1,5 @@
 ﻿using SudokuSolver.Core.Entities;
+using SudokuSolver.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace SudokuSolver.Core.Helpers
             int gridSize = structure.GetGridSize(),
                 nakedSize = gridSize > MaxForNakedCombinations ? NakedSizeForLargeGrids : gridSize;
 
-            for (int combinationSize = 2; combinationSize < Math.Min(gridSize - 1, nakedSize); combinationSize++)
+            for (int combinationSize = 2; combinationSize < Math.Min(gridSize, nakedSize); combinationSize++)
             {
                 allCombinations.Clear();
                 allCombinations = GetAllCombinations(cells, combinationSize);
@@ -112,6 +113,44 @@ namespace SudokuSolver.Core.Helpers
                     Cell cell = kvp.Value.First();
                     cell.SetCandidates(new HashSet<int>() { kvp.Key });
                     progressed = true;
+                }
+            }
+
+            return progressed;
+        }
+
+        public static bool HiddenPair(SudokuGridStructure structure)
+        {
+            bool progressed = false;
+            List<KeyValuePair<int, HashSet<Cell>>> potentialCells = new List<KeyValuePair<int, HashSet<Cell>>>();
+            structure.SetCandidatesMap();
+
+            foreach (KeyValuePair<int, HashSet<Cell>> kvp in structure.GetCandidatesMap())
+            {
+                if (kvp.Value.Count == 2)
+                {
+                    potentialCells.Add(kvp);
+                }
+            }
+
+            foreach(KeyValuePair<int, HashSet<Cell>> kvp in potentialCells)
+            {
+                foreach (KeyValuePair<int, HashSet<Cell>> otherKvp in potentialCells)
+                {
+                    if (otherKvp.Key != kvp.Key)
+                        if (otherKvp.Value.Equals(kvp.Value))
+                        {
+                            foreach (KeyValuePair<int, HashSet<Cell>> illegal in potentialCells)
+                            {
+                                if (otherKvp.Key != illegal.Key && illegal.Key != kvp.Key)
+                                    if (otherKvp.Value.Equals(kvp.Value))
+                                        throw new UnsolvableSudokuGridException();
+                            }
+
+                            progressed = true;
+                            foreach (Cell cell in otherKvp.Value)
+                                cell.SetCandidates(new HashSet<int>() {kvp.Key, otherKvp.Key});
+                        }
                 }
             }
 

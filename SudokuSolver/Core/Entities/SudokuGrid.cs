@@ -199,6 +199,24 @@ namespace SudokuSolver.Core
             return grid;
         }
 
+        public Cell GetCellWithLeastCandidates()
+        {
+            int min = gridSize + 1;
+            Cell cell = null, minCell = null;
+
+            foreach (SudokuGridStructure row in rows)
+            {
+                cell = row.GetCellWithLeastCandidates();
+                if (cell != null && cell.GetCandidates().Length < min)
+                {
+                    minCell = cell;
+                    min = minCell.GetCandidates().Length;
+                }
+            }
+
+            return minCell;
+        }
+
         /// <summary>
         /// A method which returns the most occupied grid structure in a grid, which isn't fully solved.
         /// </summary>
@@ -227,7 +245,6 @@ namespace SudokuSolver.Core
 
             foreach (SudokuGridStructure structure in arr)
             {
-                SudokuHeuristics.RemoveCandidates(structure);
                 if (structure.GetOccupiedCount() > maxOccupied &&
                     structure.GetOccupiedCount() != gridSize)
                 {
