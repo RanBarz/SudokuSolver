@@ -37,14 +37,13 @@ namespace SudokuSolver.Core
         }
 
         /// <summary>
-        /// Attempts to solve the Sudoku puzzle using row, column, and subgrid solving strategies
+        /// Attempts to solve the Sudoku puzzle using row, column, and subgrid solving strategies. And Naked Combinations included.
         /// </summary>
         public string Solve()
         {
             SudokuGridStructure[] rows = grid.GetRows();
             SudokuGridStructure[] cols = grid.GetCols();
             SudokuGridStructure[] subgrids = grid.GetSubgrids();
-
 
             NakedCombinationsOnArray(rows);
             NakedCombinationsOnArray(cols);
@@ -56,6 +55,9 @@ namespace SudokuSolver.Core
             throw new UnsolvableSudokuGridException("The grid you entered is unsolvable.");
         }
 
+        /// <summary>
+        /// A method which is called for backtracking which solves a board without applying naked combinations.
+        /// </summary>
         public string SolveBacktrack()
         {
             SudokuGridStructure[] rows = grid.GetRows();
